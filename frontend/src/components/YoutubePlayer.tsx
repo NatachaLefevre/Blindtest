@@ -1,22 +1,22 @@
-// /src/components/YoutubePlayer.tsx
 import YouTube from 'react-youtube';
 
+interface YoutubePlayerProps {
+  videoId: string;
+  start: number;
+  end: number;
+  showVideo: boolean;
+}
 
-export default function YoutubePlayer() {
+export default function YoutubePlayer({ videoId, start, end, showVideo }: YoutubePlayerProps) {
   const opts = {
-    height: '200',
-    width: '300',
+    height: showVideo ? '200' : '0',
+    width: showVideo ? '320' : '0',
     playerVars: {
-      autoplay: 0,
-      start: 30, // Commence à 30s par exemple
-      end: 45,   // Finit à 45s
+      autoplay: 1,
+      start,
+      end,
     },
   };
 
-  return (
-    <div>
-      <h2>Blindtest 🎵</h2>
-      <YouTube videoId="7wtfhZwyrcc" opts={opts} />
-    </div>
-  );
+  return <YouTube videoId={videoId} opts={opts} />;
 }
