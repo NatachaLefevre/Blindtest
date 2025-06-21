@@ -22,8 +22,6 @@ export default function Blindtest() {
   return (
 
     <div className="flex flex-col items-center p-8 space-y-8 bg-white rounded-lg shadow w-full max-w-xl mx-auto mt-8">
-      
-      {/* <h1 className="text-4xl text-pink-500 font-bold underline text-center">🎵 Blindtest d'une parfaite laideur mais ce n'est que le début</h1> */}
 
       <button onClick={handlePlay} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-10 rounded shadow transition">▶️ Lancer l'extrait</button>
 
