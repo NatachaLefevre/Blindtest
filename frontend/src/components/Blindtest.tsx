@@ -21,21 +21,21 @@ export default function Blindtest() {
 
   return (
 
-    <div className="flex flex-col items-center p-6 space-y-6 bg-white rounded-lg shadow max-w-lg mx-auto mt-8">
+    <div className="flex flex-col items-center p-8 space-y-8 bg-white rounded-lg shadow w-full max-w-xl mx-auto mt-8">
       
-      <h1 className="text-4xl text-pink-500 font-bold underline text-center">🎵 Blindtest d'une parfaite laideur mais ce n'est que le début</h1>
+      {/* <h1 className="text-4xl text-pink-500 font-bold underline text-center">🎵 Blindtest d'une parfaite laideur mais ce n'est que le début</h1> */}
 
-      <button onClick={handlePlay} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded shadow transition">▶️ Lancer l'extrait</button>
+      <button onClick={handlePlay} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-10 rounded shadow transition">▶️ Lancer l'extrait</button>
 
       <input
         type="text"
-        placeholder="Titre du morceau"
+        placeholder="Devine le morceau"
         className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
         value={guess}
         onChange={(e) => setGuess(e.target.value)}
       />
 
-      <button onClick={handleCheck} className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded transition">✅ Valider la réponse</button>
+      <button onClick={handleCheck} className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-10 rounded transition">✅ Valider la réponse</button>
     </div>
   );
 
