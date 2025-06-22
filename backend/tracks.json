@@ -1,0 +1,452 @@
+[
+  {
+    "title": "Believer",
+    "artist": "Imagine Dragons",
+    "videoId": "7wtfhZwyrcc",
+    "start": 30,
+    "end": 60,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "Evolve"
+  },
+  {
+    "title": "Shape of You",
+    "artist": "Ed Sheeran",
+    "videoId": "JGwWNGJdvx8",
+    "start": 15,
+    "end": 45,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "÷ (Divide)"
+  },
+  {
+    "title": "Rolling in the Deep",
+    "artist": "Adele",
+    "videoId": "rY0WxgSXdEE",
+    "start": 20,
+    "end": 50,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "21"
+  },
+  {
+    "title": "Uptown Funk",
+    "artist": "Mark Ronson ft. Bruno Mars",
+    "videoId": "OPf0YbXqDm0",
+    "start": 10,
+    "end": 40,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "Uptown Special"
+  },
+  {
+    "title": "Someone Like You",
+    "artist": "Adele",
+    "videoId": "_lq6c4d5e6f7",
+    "start": 25,
+    "end": 55,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "21"
+  },
+  {
+    "title": "Despacito",
+    "artist": "Luis Fonsi ft. Daddy Yankee",
+    "videoId": "kJQP7kiw5Fk",
+    "start": 30,
+    "end": 60,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "VIDA"
+  },
+  {
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "videoId": "4NRXx6U8ABQ",
+    "start": 20,
+    "end": 50,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "After Hours"
+  },
+  {
+    "title": "Bad Guy",
+    "artist": "Billie Eilish",
+    "videoId": "DyDfgMOUjCI",
+    "start": 15,
+    "end": 45,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "When We All Fall Asleep, Where Do We Go?"
+  },
+  {
+    "title": "Dance Monkey",
+    "artist": "Tones and I",
+    "videoId": "_lq6c4d5e6f7",
+    "start": 25,
+    "end": 55,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "The Kids Are Coming"
+  },
+  {
+    "title": "Shallow",
+    "artist": "Lady Gaga & Bradley Cooper",
+    "videoId": "bo_efYhYU2A",
+    "start": 30,
+    "end": 60,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "A Star Is Born"
+  },
+  {
+    "title": "Old Town Road",
+    "artist": "Lil Nas X ft. Billy Ray Cyrus",
+    "videoId": "7wtfhZwyrcc",
+    "start": 20,
+    "end": 50,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "7"
+  },
+  {
+    "title": "Le Festin",
+    "artist": "Camille",
+    "videoId": "_lq6c4d5e6f7",
+    "start": 25,
+    "end": 55,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Ratatouille"
+  },
+  {
+    "title": "A Dream is a Wish Your Heart Makes",
+    "artist": "Ilene Woods",
+    "videoId": "2b3c4d5e6f7",
+    "start": 15,
+    "end": 45,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Cinderella"
+  },
+  {
+    "title": "Reflection",
+    "artist": "Lea Salonga",
+    "videoId": "_uP8j7k3Q9E",
+    "start": 20,
+    "end": 50,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Mulan"
+  },
+  {
+    "title": "Let It Go",
+    "artist": "Idina Menzel",
+    "videoId": "moSFlvxnbgk",
+    "start": 45,
+    "end": 75,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "La Reine des Neiges"
+  },
+  {
+    "title": "A Whole New World",
+    "artist": "Brad Kane & Lea Salonga",
+    "videoId": "0mX2d8b1g3c",
+    "start": 30,
+    "end": 60,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Aladdin"
+  },
+  {
+    "title": "Hakuna Matata",
+    "artist": "Nathan Lane, Ernie Sabella, Jason Weaver, Joseph Williams",
+    "videoId": "j6v4k5l6m7n",
+    "start": 20,
+    "end": 50,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Le Roi Lion"
+  },
+  {
+    "title": "You've Got a Friend in Me",
+    "artist": "Randy Newman",
+    "videoId": "JIX8I-8j2YQ",
+    "start": 15,
+    "end": 45,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Toy Story"
+  },
+  {
+    "title": "I Just Can't Wait to Be King",
+    "artist": "Jason Weaver, Rowan Atkinson, Laura Williams",
+    "videoId": "2b3c4d5e6f7",
+    "start": 25,
+    "end": 55,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Le Roi Lion"
+  },
+  {
+    "title": "Friend Like Me",
+    "artist": "Robin Williams",
+    "videoId": "8gX9h0i1j2k",
+    "start": 40,
+    "end": 70,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Aladdin"
+  },
+  {
+    "title": "Be Our Guest",
+    "artist": "Angela Lansbury, Jerry Orbach, David Ogden Stiers",
+    "videoId": "zj3k4l5m6n7",
+    "start": 30,
+    "end": 60,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "La Belle et la Bête"
+  },
+  {
+    "title": "Go the Distance",
+    "artist": "Roger Bart",
+    "videoId": "8h9i0j1k2l3",
+    "start": 20,
+    "end": 50,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Hercules"
+  },
+  {
+    "title": "Circle of Life",
+    "artist": "Elton John",
+    "videoId": "GibiNy4d4gc",
+    "start": 50,
+    "end": 80,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "Le Roi Lion"
+  },
+  {
+    "title": "Under the Sea",
+    "artist": "Samuel E. Wright",
+    "videoId": "_uP8j7k3Q9E",
+    "start": 20,
+    "end": 50,
+    "category": "musiques Disney",
+    "theme": "film",
+    "source": "La Petite Sirène"
+  },
+  {
+    "title": "Still Alive",
+    "artist": "GLaDOS",
+    "videoId": "Y6ljFaKRTrI",
+    "start": 35,
+    "end": 65,
+    "category": "musiques de jeux vidéo",
+    "theme": "jeu",
+    "source": "Portal"
+  },
+  {
+    "title": "Take On Me",
+    "artist": "a-ha",
+    "videoId": "djV11Xbc914",
+    "start": 50,
+    "end": 80,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "Hunting High and Low"
+  },
+  {
+    "title": "Vertige de l'amour",
+    "artist": "Alain Bashung",
+    "videoId": "ZJh4PAzV4fw",
+    "start": 40,
+    "end": 70,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "Pizza"
+  },
+  {
+    "title": "Zombie",
+    "artist": "The Cranberries",
+    "videoId": "YkSVJ0g2b6c",
+    "start": 30,
+    "end": 60,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "No Need to Argue"
+  },
+  {
+    "title": "La Nuit je mens",
+    "artist": "Alain Bashung",
+    "videoId": "3a1d4e5f6g7",
+    "start": 25,
+    "end": 55,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "L'Imprudence"
+  },
+  {
+    "title": "Lily",
+    "artist": "Pierre Perret",
+    "videoId": "8b9c0d1e2f3",
+    "start": 15,
+    "end": 45,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "Lily"
+  },
+  {
+    "title": "Ne me quitte pas",
+    "artist": "Jacques Brel",
+    "videoId": "4d5e6f7g8h9",
+    "start": 20,
+    "end": 50,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "Quand on n'a que l'amour"
+  },
+  {
+    "title": "La Javanaise",
+    "artist": "Serge Gainsbourg",
+    "videoId": "1a2b3c4d5e6",
+    "start": 30,
+    "end": 60,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "Gainsbourg"
+  },
+  {
+    "title": "Time",
+    "artist": "Hans Zimmer",
+    "videoId": "Z0kGAz6HYM8",
+    "start": 90,
+    "end": 120,
+    "category": "musiques de films",
+    "theme": "film",
+    "source": "Inception"
+  },
+  {
+    "title": "Comptine d'un autre été: L'après-midi",
+    "artist": "Yann Tiersen",
+    "videoId": "H2-1u8k9d3c",
+    "start": 40,
+    "end": 70,
+    "category": "musiques de films",
+    "theme": "film",
+    "source": "Le Fabuleux Destin d'Amélie Poulain"
+  },
+  {
+    "title": "The Good, the Bad and the Ugly Theme",
+    "artist": "Ennio Morricone",
+    "videoId": "_lq6c4d5e6f7",
+    "start": 20,
+    "end": 50,
+    "category": "musiques de films",
+    "theme": "film",
+    "source": "The Good, the Bad and the Ugly"
+  },
+  {
+    "title": "My Heart Will Go On",
+    "artist": "Céline Dion",
+    "videoId": "_uP8j7k3Q9E",
+    "start": 30,
+    "end": 60,
+    "category": "musiques de films",
+    "theme": "film",
+    "source": "Titanic"
+  },
+  {
+    "title": "Hallelujah",
+    "artist": "Jeff Buckley",
+    "videoId": "Y8l6b7c8d9e",
+    "start": 15,
+    "end": 45,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "Grace"
+  },
+  {
+    "title": "Imagine",
+    "artist": "John Lennon",
+    "videoId": "YokoO9a1b2c3",
+    "start": 20,
+    "end": 50,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "Imagine"
+  },
+  {
+    "title": "Billie Jean",
+    "artist": "Michael Jackson",
+    "videoId": "_lq6c4d5e6f7",
+    "start": 25,
+    "end": 55,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "Thriller"
+  },
+  {
+    "title": "La Vie en rose",
+    "artist": "Édith Piaf",
+    "videoId": "4a5b6c7d8e9",
+    "start": 10,
+    "end": 40,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "La Vie en rose"
+  },
+  {
+    "title": "Je te promets",
+    "artist": "Johnny Hallyday",
+    "videoId": "_fGgHhIiJjKk",
+    "start": 20,
+    "end": 50,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "Je te promets"
+  },
+  {
+    "title": "Tous les mêmes",
+    "artist": "Stromae",
+    "videoId": "2Vv-BfVoq4g",
+    "start": 30,
+    "end": 60,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "Racine carrée"
+  },
+  {
+    "title": "Dernière danse",
+    "artist": "Indila",
+    "videoId": "YbJOTdZBX1g",
+    "start": 25,
+    "end": 55,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "Mini World"
+  },
+  {
+    "title": "Je danse le Mia",
+    "artist": "IAM",
+    "videoId": "aZglqkCRnt4",
+    "start": 20,
+    "end": 50,
+    "category": "chanson anglophone",
+    "theme": "album",
+    "source": "Ombre est lumière"
+  },
+  {
+    "title": "La Bohème",
+    "artist": "Charles Aznavour",
+    "videoId": "1a2b3c4d5e6",
+    "start": 50,
+    "end": 80,
+    "category": "chanson francophone",
+    "theme": "album",
+    "source": "La Bohème"
+  }
+]

@@ -1,8 +1,21 @@
 import { useState, useEffect } from 'react';
 import YoutubePlayer from './YoutubePlayer';
-import tracks from '../data/tracks.json';
+import CategorySelector from './CategorySelector';
+
+// 🎵 Définition du type de morceau utilisé
+type Track = {
+  title: string;
+  artist: string;
+  videoId: string;
+  start: number;
+  end: number;
+  category: string;
+  theme?: string; // facultatif pour l’instant
+  source?: string; // idem
+};
 
 export default function Blindtest() {
+  // 📝 États pour gérer la réponse de l'utilisateur, le morceau en cours, le timer, etc.
   const [guess, setGuess] = useState('');
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [revealAnswer, setRevealAnswer] = useState(false);
@@ -10,16 +23,37 @@ export default function Blindtest() {
   const [timer, setTimer] = useState(30);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const currentTrack = tracks[currentTrackIndex];
+  // ✅ Catégories cochées par l'utilisateur
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  // ⏳ Timer lancé uniquement si l'extrait est en cours
+  // 📦 Liste complète des morceaux récupérés depuis le backend
+  const [trackList, setTrackList] = useState<Track[]>([]);
+
+  // 🔁 Appel API pour récupérer les morceaux depuis le backend Express
+  useEffect(() => {
+    fetch('http://localhost:3001/api/tracks')
+      .then((res) => res.json())
+      .then((data) => setTrackList(data));
+  }, []);
+
+  // 🔎 On filtre les morceaux selon les catégories sélectionnées
+  const filteredTracks = trackList.filter(
+    (track) =>
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(track.category)
+  );
+
+  // 🎯 On prend le morceau en cours depuis la liste filtrée
+  const currentTrack = filteredTracks[currentTrackIndex];
+
+  // ⏱ Timer déclenché uniquement si un extrait est en cours
   useEffect(() => {
     let countdown: NodeJS.Timeout;
     if (isPlaying && timer > 0 && !revealAnswer) {
       countdown = setTimeout(() => setTimer(timer - 1), 1000);
     }
 
-    // Fin du timer = échec → on montre la réponse et lance le player
+    // 🚨 Si le temps est écoulé : on montre la réponse
     if (timer === 0 && !revealAnswer) {
       setRevealAnswer(true);
       setShowPlayer(true);
@@ -28,50 +62,69 @@ export default function Blindtest() {
     return () => clearTimeout(countdown);
   }, [isPlaying, timer, revealAnswer]);
 
+  // ▶️ Quand on clique sur "Lancer l'extrait", ça lance l'extrait (de fait)
   const handlePlay = () => {
-    setIsPlaying(true); // déclenche le timer
     setIsPlaying(true);
-    setShowPlayer(true); // on montre le lecteur dès le début
-
+    setShowPlayer(true);
   };
 
+  // ✅ Validation de la réponse entrée
   const handleCheck = () => {
     const userAnswer = guess.trim().toLowerCase();
-    const correct = currentTrack.title.trim().toLowerCase();
+    const correctAnswer = currentTrack.title.trim().toLowerCase();
 
-    if (userAnswer === correct) {
-      setRevealAnswer(true); // on révèle la réponse
-      setShowPlayer(true); // on montre le lecteur
-      setIsPlaying(false); // on arrête le timer
+    if (userAnswer === correctAnswer) {
+      setRevealAnswer(true);
+      setShowPlayer(true);
+      setIsPlaying(false);
       alert('✅ Bonne réponse, bravo !');
-
     } else {
-      alert('❌ Mauvaise réponse, essaie encore !');
-      // timer continue car mauvaise réponse
+      alert('❌ Ah, c\'est dommage...');
     }
   };
 
+  // 🎵 Passer au morceau suivant
   const handleNext = () => {
     setGuess('');
     setTimer(30);
     setRevealAnswer(false);
     setShowPlayer(false);
     setIsPlaying(false);
-    setCurrentTrackIndex((prev) => (prev + 1) % tracks.length);
+    setCurrentTrackIndex((prev) => (prev + 1) % filteredTracks.length);
   };
+
+  // ⏳ Si le site rame, ça affiche un chargement pour faire patienter
+  if (!currentTrack) {
+    return <p className="text-center mt-8">Chargement du blindtest...</p>;
+  }
 
   return (
     <div className="flex flex-col items-center p-8 space-y-6 bg-white rounded-lg shadow w-full max-w-xl mx-auto mt-8">
+
+      {/* ✅ Sélection des catégories */}
+      <CategorySelector
+        selectedCategories={selectedCategories}
+        onChange={setSelectedCategories}
+      />
+
+      {/* ▶️ Bouton pour lancer la musique */}
       {!revealAnswer && !isPlaying && (
-        <button onClick={handlePlay} className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition">
+        <button
+          onClick={handlePlay}
+          className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
+        >
           ▶️ Lancer l'extrait
         </button>
       )}
 
+      {/* ⏱ Affichage du timer */}
       {!revealAnswer && isPlaying && (
-        <p className="text-sm text-gray-600">⏳ Temps restant : {timer}s</p>
+        <p className="text-sm text-gray-600">
+          ⏳ Temps restant : {timer}s
+        </p>
       )}
 
+      {/* 📝 Champ de réponse */}
       <input
         type="text"
         placeholder="Devine le titre du morceau"
@@ -81,6 +134,7 @@ export default function Blindtest() {
         disabled={revealAnswer}
       />
 
+      {/* ✅ Bouton pour valider la réponse */}
       <button
         onClick={handleCheck}
         disabled={revealAnswer || !isPlaying}
@@ -89,22 +143,26 @@ export default function Blindtest() {
         ✅ Valider la réponse
       </button>
 
+      {/* 🎥 Lecteur Youtube visible uniquement à la fin du timer, ou quand la bonne réponse a été trouvée */}
       {showPlayer && (
         <YoutubePlayer
           videoId={currentTrack.videoId}
           start={currentTrack.start}
           end={currentTrack.end}
-          showVideo={revealAnswer} // vidéo visible seulement après succès ou fin du timer
+          showVideo={revealAnswer}
         />
       )}
 
-
+      {/* 🎉 Affichage de la bonne réponse */}
       {revealAnswer && (
         <div className="text-center">
           <p className="text-lg text-gray-700">
             🎵 C'était : <strong>{currentTrack.artist} - {currentTrack.title}</strong>
           </p>
-          <button onClick={handleNext} className="mt-4 bg-purple-500 hover:bg-purple-600 text-white py-2 px-6 rounded">
+          <button
+            onClick={handleNext}
+            className="mt-4 bg-purple-500 hover:bg-purple-600 text-white py-2 px-6 rounded"
+          >
             ▶️ Morceau suivant
           </button>
         </div>
