@@ -16,6 +16,7 @@ type Track = {
 
 export default function Blindtest() {
   // 📝 États pour gérer la réponse de l'utilisateur, le morceau en cours, le timer, etc.
+  // Possibilité de réduire le nombre de useState ? On pourrait regrouper guess et revealAnswer dans un seul objet d'état, mais pour la clarté, on les garde séparés pour l'instant.
   const [guess, setGuess] = useState('');
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [revealAnswer, setRevealAnswer] = useState(false);
@@ -36,14 +37,14 @@ export default function Blindtest() {
       .then((data) => setTrackList(data));
   }, []);
 
-  // 🔎 On filtre les morceaux selon les catégories sélectionnées
+  // 🔎 Les morceaux sont filtrés selon les catégories sélectionnées par les joueurs
   const filteredTracks = trackList.filter(
     (track) =>
       selectedCategories.length === 0 ||
       selectedCategories.includes(track.category)
   );
 
-  // 🎯 On prend le morceau en cours depuis la liste filtrée
+  // 🎯 Le morceau en cours depuis la liste filtrée
   const currentTrack = filteredTracks[currentTrackIndex];
 
   // ⏱ Timer déclenché uniquement si un extrait est en cours
@@ -62,17 +63,18 @@ export default function Blindtest() {
     return () => clearTimeout(countdown);
   }, [isPlaying, timer, revealAnswer]);
 
-  // ▶️ Quand on clique sur "Lancer l'extrait", ça lance l'extrait (de fait)
+  // ▶️ Pour lancer l'extrait (prévoir aléatoire))
   const handlePlay = () => {
     setIsPlaying(true);
     setShowPlayer(true);
   };
 
-  // ✅ Validation de la réponse entrée
+  // ✅ Validation de la réponse
   const handleCheck = () => {
     const userAnswer = guess.trim().toLowerCase();
     const correctAnswer = currentTrack.title.trim().toLowerCase();
 
+    // Une alerte s'affiche suivant si la réponse est bonne ou mauvaise (à remplacer)
     if (userAnswer === correctAnswer) {
       setRevealAnswer(true);
       setShowPlayer(true);
@@ -83,7 +85,7 @@ export default function Blindtest() {
     }
   };
 
-  // 🎵 Passer au morceau suivant
+  // 🎵 Passer au morceau suivant (prévoir de l'aléatoire)
   const handleNext = () => {
     setGuess('');
     setTimer(30);

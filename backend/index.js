@@ -1,3 +1,6 @@
+// Pour lancer le serveur : npm run start
+// Pour lancer le frontend : npm run dev
+
 const express = require('express');
 const cors = require('cors');
 const app = express();

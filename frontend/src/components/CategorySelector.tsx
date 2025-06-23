@@ -6,12 +6,12 @@ type Props = {
 
 export default function CategorySelector({ selectedCategories, onChange }: Props) {
   const categories = [
-    'chanson anglophone',
-    'chanson francophone',
-    'musiques Disney',
-    'musiques de jeux vidéo',
-    'musiques de films',
-    'musiques de séries'
+    'Chanson anglophone',
+    'Chanson francophone',
+    'Musiques Disney',
+    'Musiques de jeux vidéo',
+    'Musiques de films',
+    'Musiques de séries'
   ];
 
   const handleToggle = (cat: string, checked: boolean) => {
@@ -32,7 +32,7 @@ export default function CategorySelector({ selectedCategories, onChange }: Props
             checked={selectedCategories.includes(cat)}
             onChange={(e) => handleToggle(cat, e.target.checked)}
           />
-          <span>{cat}</span>
+          <span className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded transition">{cat}</span>
         </label>
       ))}
     </div>
