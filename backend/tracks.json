@@ -5,7 +5,6 @@
     "category": "chanson anglophone",
     "videoId": "7wtfhZwyrcc",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -14,7 +13,6 @@
     "category": "chanson anglophone",
     "videoId": "JGwWNGJdvx8",
     "start": 15,
-    "end": 65,
     "verified": true
   },
   {
@@ -23,7 +21,6 @@
     "category": "chanson anglophone",
     "videoId": "rYEDA3JcQqw",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
@@ -32,7 +29,6 @@
     "category": "chanson anglophone",
     "videoId": "OPf0YbXqDm0",
     "start": 10,
-    "end": 60,
     "verified": true
   },
   {
@@ -41,7 +37,6 @@
     "category": "chanson anglophone",
     "videoId": "hLQl3WQQoQ0",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -50,7 +45,6 @@
     "category": "chanson anglophone",
     "videoId": "kJQP7kiw5Fk",
     "start": 30,
-    "end": 860,
     "verified": true
   },
   {
@@ -59,7 +53,6 @@
     "category": "chanson anglophone",
     "videoId": "4NRXx6U8ABQ",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
@@ -68,7 +61,6 @@
     "category": "chanson anglophone",
     "videoId": "DyDfgMOUjCI",
     "start": 15,
-    "end": 65,
     "verified": true
   },
   {
@@ -77,7 +69,6 @@
     "category": "chanson anglophone",
     "videoId": "q0hyYWKXF0Q",
     "start": 25,
-    "end": 75,
     "verified": true
   },
   {
@@ -86,7 +77,6 @@
     "category": "chanson anglophone",
     "videoId": "bo_efYhYU2A",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -95,7 +85,6 @@
     "category": "chanson anglophone",
     "videoId": "r7qovpFAGrQ",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
@@ -104,7 +93,6 @@
     "category": "chanson francophone",
     "videoId": "7ceNf9qJjgc",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -113,16 +101,14 @@
     "category": "musiques de séries",
     "videoId": "QJHPlKPOc78",
     "start": 490,
-    "end": 540,
     "verified": true
   },
   {
     "title": "La Reine des Neiges",
     "artist": "Idina Menzel",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "moSFlvxnbgk",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -131,43 +117,38 @@
     "category": "musiques de séries",
     "videoId": "w3QW8PVyyNM",
     "start": 60,
-    "end": 110,
     "verified": true
   },
   {
     "title": "Le Roi Lion",
     "artist": "Hans Zimmer",
-    "category": "musiques Disney",
-    "videoId": "xOz2cvHDDJc",
+    "category": "musiques disney",
+    "videoId": "HBwZPozCmGA",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
     "title": "Ratatouille",
     "artist": "Camille",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "G3lSONLLx70",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
-    "title": "Cinderella",
+    "title": "Cendrillon",
     "artist": "Ilene Woods",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "Kp7_6YBix30",
     "start": 15,
-    "end": 65,
     "verified": true
   },
   {
     "title": "Mulan",
     "artist": "Lea Salonga",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "RxUmbraYDcE",
     "start": 40,
-    "end": 90,
     "verified": true
   },
   {
@@ -176,7 +157,6 @@
     "category": "musiques de séries",
     "videoId": "s7L2PVdrb_8",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -185,7 +165,6 @@
     "category": "musiques de séries",
     "videoId": "zEaKQqtzxJM",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -194,7 +173,6 @@
     "category": "musiques de jeux vidéo",
     "videoId": "Y6ljFaKRTrI",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -203,16 +181,14 @@
     "category": "chanson francophone",
     "videoId": "cXry0kNWAis",
     "start": 50,
-    "end": 100,
     "verified": true
   },
   {
     "title": "Le Roi Lion",
     "artist": "Hans Zimmer",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "GibiNy4d4gc",
-    "start": 30,
-    "end": 80,
+    "start": 70,
     "verified": true
   },
   {
@@ -221,34 +197,30 @@
     "category": "musiques de films",
     "videoId": "RxabLA7UQ9k",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
     "title": "Final Fantasy X",
     "artist": "Nobuo Uematsu",
     "category": "musiques de jeux vidéo",
-    "videoId": "zmE6S6MIG_4",
+    "videoId": "4pzxfgzhOvE",
     "start": 30,
-    "end": 80,
     "verified": true
   },
-    {
+  {
     "title": "Take On Me",
     "artist": "a-ha",
     "category": "chanson anglophone",
     "videoId": "djV11Xbc914",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
     "title": "Vertige de l'amour",
     "artist": "Alain Bashung",
-    "category": "Chanson francophone",
+    "category": "chanson francophone",
     "videoId": "S3WXldBARAc",
     "start": 40,
-    "end": 90,
     "verified": true
   },
   {
@@ -257,7 +229,6 @@
     "category": "chanson anglophone",
     "videoId": "Pgum6OT_VH8",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -266,7 +237,6 @@
     "category": "chanson francophone",
     "videoId": "VHoT4N43jK8",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -275,7 +245,6 @@
     "category": "chanson anglophone",
     "videoId": "6Ejga4kJUts",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -284,79 +253,70 @@
     "category": "chanson francophone",
     "videoId": "TxU3VXM4dVo",
     "start": 30,
-    "end": 80,
     "verified": true
   },
-    {
+  {
     "title": "Lily",
     "artist": "Pierre Perret",
-    "category": "Chanson francophone",
+    "category": "chanson francophone",
     "videoId": "urVfi9Yswaw",
     "start": 15,
-    "end": 65,
     "verified": true
   },
   {
     "title": "Aladdin",
     "artist": "Brad Kane & Lea Salonga",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "xYjFxFFdyyk",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
     "title": "Le Roi Lion",
     "artist": "Hanz Zimmer",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "v34w65U98gI",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
     "title": "Toy Story",
     "artist": "Randy Newman",
-    "category": "musiques Disney",
-    "videoId": "EcXURC_nNhc",
+    "category": "musiques disney",
+    "videoId": "0hG-2tQtdlE",
     "start": 15,
-    "end": 65,
     "verified": true
   },
   {
     "title": "Aladdin",
     "artist": "Robin Williams",
-    "category": "musiques Disney",
-    "videoId": "WJzSBLCaKc8",
+    "category": "musiques disney",
+    "videoId": "Qx91ff77yzM",
     "start": 40,
-    "end": 90,
     "verified": true
   },
   {
     "title": "La Belle et la Bête",
     "artist": "Daniel Beretta et Lucie Dolène",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "Xq3W-J7CZdk",
     "start": 40,
-    "end": 90,
     "verified": true
   },
   {
     "title": "Hercule",
     "artist": "Roger Bart",
-    "category": "musiques Disney",
-    "videoId": "f_JLkIOnq04",
+    "category": "musiques disney",
+    "videoId": "wdxQc3Ilg-g",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
     "title": "La Petite Sirène",
     "artist": "Henri Salvador",
-    "category": "musiques Disney",
+    "category": "musiques disney",
     "videoId": "4iQETIfbzvk",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
@@ -365,7 +325,6 @@
     "category": "chanson anglophone",
     "videoId": "YkgkThdzX-8",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
@@ -374,7 +333,6 @@
     "category": "chanson anglophone",
     "videoId": "Zi_XLOBDo_Y",
     "start": 25,
-    "end": 75,
     "verified": true
   },
   {
@@ -383,7 +341,6 @@
     "category": "chanson francophone",
     "videoId": "zXoBOGegEtU",
     "start": 10,
-    "end": 60,
     "verified": true
   },
   {
@@ -392,7 +349,6 @@
     "category": "chanson francophone",
     "videoId": "ghMezCjCTBI",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
@@ -401,7 +357,6 @@
     "category": "chanson francophone",
     "videoId": "K5KAc5CoCuk",
     "start": 25,
-    "end": 75,
     "verified": true
   },
   {
@@ -410,7 +365,6 @@
     "category": "chanson francophone",
     "videoId": "CAMWdvo71ls",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -419,25 +373,22 @@
     "category": "chanson francophone",
     "videoId": "Z4YfkeUzo8o",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
     "title": "La Javanaise",
     "artist": "Serge Gainsbourg",
-    "category": "Chanson francophone",
+    "category": "chanson francophone",
     "videoId": "51pK2k_Sa4o",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
     "title": "Le Bon, la Brute et le Truand",
     "artist": "Ennio Morricone",
-    "category": "Musiques de films",
+    "category": "musiques de films",
     "videoId": "J9EZGHcu3E8",
     "start": 20,
-    "end": 70,
     "verified": true
   },
   {
@@ -446,7 +397,6 @@
     "category": "musiques de films",
     "videoId": "Htaj3o3JD8I",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -455,7 +405,6 @@
     "category": "musiques de séries",
     "videoId": "pG9zyu1OUp8",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -464,7 +413,6 @@
     "category": "musiques de films",
     "videoId": "UoSSbmD9vqc",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -473,7 +421,6 @@
     "category": "musiques de séries",
     "videoId": "aOC8E8z_ifw",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -482,7 +429,6 @@
     "category": "musiques de séries",
     "videoId": "jEgX64n3T7g",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -491,7 +437,6 @@
     "category": "musiques de films",
     "videoId": "WNIPqafd4As",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
@@ -500,43 +445,46 @@
     "category": "musiques de films",
     "videoId": "ygr5AHufBN4",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
-    "title": "The Legend of Zelda",
+    "title": "The Legend of Zelda Ocarina Of Time",
     "artist": "Koji Kondo",
     "category": "musiques de jeux vidéo",
-    "videoId": "UpjdnEfzV64",
+    "videoId": "0hEYvdMoF2g",
     "start": 30,
-    "end": 80,
+    "verified": true
+  },
+  {
+    "title": "Doom",
+    "artist": "Bobby Prince",
+    "category": "musiques de jeux vidéo",
+    "videoId": "BSsfjHCFosw",
+    "start": 30,
     "verified": true
   },
   {
     "title": "Skyrim",
     "artist": "Jeremy Soule",
     "category": "musiques de jeux vidéo",
-    "videoId": "BSsfjHCFosw",
+    "videoId": "6fILxnBH1Tg",
     "start": 30,
-    "end": 80,
     "verified": true
   },
   {
     "title": "Pirates des Caraïbes",
     "artist": "Hans Zimmer",
     "category": "musiques de films",
-    "videoId": "KsvztTtvyr4",
-    "start": 30,
-    "end": 80,
+    "videoId": "KaR5I_sT7kQ",
+    "start": 60,
     "verified": true
   },
-    {
+  {
     "title": "Hallelujah",
     "artist": "Jeff Buckley",
     "category": "chanson anglophone",
     "videoId": "y8AWFf7EAc4",
     "start": 15,
-    "end": 65,
     "verified": true
   },
   {
@@ -545,7 +493,6 @@
     "category": "musiques de films",
     "videoId": "H2-1u8xvk54",
     "start": 40,
-    "end": 90,
     "verified": true
   }
 ]

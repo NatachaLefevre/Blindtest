@@ -7,14 +7,14 @@ interface YoutubePlayerProps {
   showVideo: boolean;
 }
 
-export default function YoutubePlayer({ videoId, start, end, showVideo }: YoutubePlayerProps) {
+export default function YoutubePlayer({ videoId, start, showVideo }: YoutubePlayerProps) {
   const opts = {
     height: showVideo ? '200' : '0',
     width: showVideo ? '320' : '0',
     playerVars: {
       autoplay: 1,
       start,
-      end,
+      end: start + 50, // On joue 50 secondes à partir du début
     },
   };
 

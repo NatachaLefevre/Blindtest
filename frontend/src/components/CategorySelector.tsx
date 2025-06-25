@@ -6,12 +6,12 @@ type Props = {
 
 export default function CategorySelector({ selectedCategories, onChange }: Props) {
   const categories = [
-    'Chanson anglophone',
-    'Chanson francophone',
-    'Musiques Disney',
-    'Musiques de jeux vidéo',
-    'Musiques de films',
-    'Musiques de séries'
+    'chanson anglophone',
+    'chanson francophone',
+    'musiques disney',
+    'musiques de jeux vidéo',
+    'musiques de films',
+    'musiques de séries'
   ];
 
   const handleToggle = (cat: string, checked: boolean) => {

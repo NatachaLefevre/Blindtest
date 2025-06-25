@@ -8,15 +8,14 @@ type Track = {
   artist: string;
   videoId: string;
   start: number;
-  end: number;
   category: string;
-  theme?: string; // facultatif pour l’instant
-  source?: string; // idem
 };
 
 export default function Blindtest() {
   // 📝 États pour gérer la réponse de l'utilisateur, le morceau en cours, le timer, etc.
-  // Possibilité de réduire le nombre de useState ? On pourrait regrouper guess et revealAnswer dans un seul objet d'état, mais pour la clarté, on les garde séparés pour l'instant.
+  // Possibilité de réduire le nombre de useState ? 
+  // On pourrait regrouper guess et revealAnswer dans un seul objet d'état, mais pour la clarté, 
+  // on les garde séparés pour l'instant.
   const [guess, setGuess] = useState('');
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [revealAnswer, setRevealAnswer] = useState(false);
@@ -30,12 +29,19 @@ export default function Blindtest() {
   // 📦 Liste complète des morceaux récupérés depuis le backend
   const [trackList, setTrackList] = useState<Track[]>([]);
 
-  // 🔁 Appel API pour récupérer les morceaux depuis le backend Express
-  useEffect(() => {
-    fetch('http://localhost:3001/api/tracks')
-      .then((res) => res.json())
-      .then((data) => setTrackList(data));
-  }, []);
+  // 🔁 Appel API pour récupérer les morceaux depuis Supabase
+useEffect(() => {
+  fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/tracks?select=*`, {
+    headers: {
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+    }
+  })
+    .then((res) => res.json())
+    .then((data) => setTrackList(data))
+    .catch((error) => console.error('Erreur chargement Supabase :', error));
+}, []);
+
 
   // 🔎 Les morceaux sont filtrés selon les catégories sélectionnées par les joueurs
   const filteredTracks = trackList.filter(
@@ -97,7 +103,7 @@ export default function Blindtest() {
 
   // ⏳ Si le site rame, ça affiche un chargement pour faire patienter
   if (!currentTrack) {
-    return <p className="text-center mt-8">Chargement du blindtest...</p>;
+    return <p className="text-center mt-8">Chargement du blindtest...<br/>Mais en vrai si vous voyez ça c'est probablement que ça bugue...</p>;
   }
 
   return (
@@ -150,7 +156,7 @@ export default function Blindtest() {
         <YoutubePlayer
           videoId={currentTrack.videoId}
           start={currentTrack.start}
-          end={currentTrack.end}
+          end={currentTrack.start + 50} // On joue 50 secondes à partir du début
           showVideo={revealAnswer}
         />
       )}
