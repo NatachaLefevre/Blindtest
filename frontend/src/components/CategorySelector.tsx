@@ -1,40 +1,51 @@
-// src/components/CategorySelector.tsx
 type Props = {
   selectedCategories: string[];
   onChange: (updated: string[]) => void;
 };
 
-export default function CategorySelector({ selectedCategories, onChange }: Props) {
-  const categories = [
-    'chanson anglophone',
-    'chanson francophone',
-    'musiques disney',
-    'musiques de jeux vidéo',
-    'musiques de films',
-    'musiques de séries'
-  ];
+// Les différentes catégories disponibles pour le blindtest
+const categories = [
+  'chanson anglophone',
+  'chanson francophone',
+  'jeux vidéo',
+  'films',
+  'films d\'animation',
+  'séries',
+  'séries animées'
+];
 
-  const handleToggle = (cat: string, checked: boolean) => {
-    onChange(
-      checked
-        ? [...selectedCategories, cat]
-        : selectedCategories.filter((c) => c !== cat)
-    );
+export default function CategorySelector({ selectedCategories, onChange }: Props) {
+
+  // Cette fonction gère le changement de sélection des catégories
+  // Elle est appelée au clic sur un bouton
+  const toggleCategory = (cat: string) => {
+    if (selectedCategories.includes(cat)) {
+      onChange(selectedCategories.filter((c) => c !== cat)); // 🔄 On retire la catégorie
+    } else {
+      onChange([...selectedCategories, cat]); // ➕ On ajoute la catégorie
+    }
   };
+
 
   return (
     <div className="flex flex-wrap gap-4 justify-center my-6">
-      {categories.map((cat) => (
-        <label key={cat} className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            value={cat}
-            checked={selectedCategories.includes(cat)}
-            onChange={(e) => handleToggle(cat, e.target.checked)}
-          />
-          <span className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded transition">{cat}</span>
-        </label>
-      ))}
+      {categories.map((cat) => {
+      const isSelected = selectedCategories.includes(cat);
+
+      return (
+      <button
+        key={cat}
+        onClick={() => toggleCategory(cat)}
+        className={`text-sm px-4 py-2 rounded border transition duration-200 ${isSelected
+            ? 'bg-orange-500 text-white border-orange-600'
+            : 'bg-white hover:bg-orange-100 text-orange-600 border-orange-400'
+          } hover:shadow`}
+      >
+        {cat}
+      </button>
+      );
+      
+      })}
     </div>
   );
 }

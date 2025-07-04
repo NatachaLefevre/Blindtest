@@ -12,15 +12,29 @@ type Track = {
 };
 
 export default function Blindtest() {
-  // 📝 États pour gérer la réponse de l'utilisateur, le morceau en cours, le timer, etc.
-  // Possibilité de réduire le nombre de useState ? 
-  // On pourrait regrouper guess et revealAnswer dans un seul objet d'état, mais pour la clarté, 
-  // on les garde séparés pour l'instant.
-  const [guess, setGuess] = useState('');
+
+  // 📝 États pour gérer les différentes fonctions du jeu.
+
+  // ⚙️ Deviner le titre, l'artiste ou les deux
+  const [answerParts, setAnswerParts] = useState<string[]>(['title']);
+
+  // Réponses séparées pour le titre et l'artiste
+  const [titleGuess, setTitleGuess] = useState('');
+  const [artistGuess, setArtistGuess] = useState('');
+
+  // 📍 Index du morceau actuel dans la liste filtrée
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
+
+  // 🕵️‍♂️ État pour savoir si la réponse doit être révélée
   const [revealAnswer, setRevealAnswer] = useState(false);
+
+  // 🎥 État pour afficher le lecteur Youtube
   const [showPlayer, setShowPlayer] = useState(false);
+
+  // ⏱ Timer pour le jeu, initialisé à 30 secondes
   const [timer, setTimer] = useState(30);
+
+  // 🔊 État pour savoir si un extrait est en cours de lecture
   const [isPlaying, setIsPlaying] = useState(false);
 
   // ✅ Catégories cochées par l'utilisateur
@@ -29,18 +43,32 @@ export default function Blindtest() {
   // 📦 Liste complète des morceaux récupérés depuis le backend
   const [trackList, setTrackList] = useState<Track[]>([]);
 
+  // 🆕 Message d'erreur affiché si aucun champ "Titre" ou "Artiste" n'est sélectionné
+  const [errorMessage, setErrorMessage] = useState('');
+
+  // ✅ États pour valider ou invalider les réponses
+  const [titleCorrect, setTitleCorrect] = useState(false);
+  const [artistCorrect, setArtistCorrect] = useState(false);
+  const [inputErrorTitle, setInputErrorTitle] = useState(false);
+  const [inputErrorArtist, setInputErrorArtist] = useState(false);
+
+  // (Possibilité de réduire le nombre de useState. 
+  // On pourrait regrouper guess et revealAnswer dans un seul objet d'état, mais pour la clarté, 
+  // on les garde séparés pour l'instant.)
+
+
   // 🔁 Appel API pour récupérer les morceaux depuis Supabase
-useEffect(() => {
-  fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/tracks?select=*`, {
-    headers: {
-      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-    }
-  })
-    .then((res) => res.json())
-    .then((data) => setTrackList(data))
-    .catch((error) => console.error('Erreur chargement Supabase :', error));
-}, []);
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/tracks?select=*`, {
+      headers: {
+        apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+      }
+    })
+      .then((res) => res.json())
+      .then((data) => setTrackList(data))
+      .catch((error) => console.error('Erreur chargement Supabase :', error));
+  }, []);
 
 
   // 🔎 Les morceaux sont filtrés selon les catégories sélectionnées par les joueurs
@@ -69,31 +97,56 @@ useEffect(() => {
     return () => clearTimeout(countdown);
   }, [isPlaying, timer, revealAnswer]);
 
-  // ▶️ Pour lancer l'extrait (prévoir aléatoire))
+  // ▶️ Pour lancer l'extrait (prévoir aléatoire). Message d'erreur si aucun champ n'est sélectionné
   const handlePlay = () => {
+    if (answerParts.length === 0) {
+      setErrorMessage('❌ Sélectionne au moins "Titre" ou "Artiste" pour commencer.');
+      return;
+    }
+    setErrorMessage('');
     setIsPlaying(true);
     setShowPlayer(true);
   };
 
-  // ✅ Validation de la réponse
-  const handleCheck = () => {
-    const userAnswer = guess.trim().toLowerCase();
-    const correctAnswer = currentTrack.title.trim().toLowerCase();
 
-    // Une alerte s'affiche suivant si la réponse est bonne ou mauvaise (à remplacer)
-    if (userAnswer === correctAnswer) {
+  // ✅ Validation des réponses
+
+  const handleCheck = () => {
+    const userTitle = titleGuess.trim().toLowerCase();
+    const userArtist = artistGuess.trim().toLowerCase();
+    const correctTitle = currentTrack.title.trim().toLowerCase();
+    const correctArtist = currentTrack.artist.trim().toLowerCase();
+
+    const wantsTitle = answerParts.includes('title');
+    const wantsArtist = answerParts.includes('artist');
+
+    const isTitleCorrect = !wantsTitle || userTitle === correctTitle;
+    const isArtistCorrect = !wantsArtist || userArtist === correctArtist;
+
+    setTitleCorrect(wantsTitle && userTitle === correctTitle);
+    setArtistCorrect(wantsArtist && userArtist === correctArtist);
+
+    const allCorrect = isTitleCorrect && isArtistCorrect;
+    setInputErrorTitle (!isTitleCorrect);
+    setInputErrorArtist (!isArtistCorrect);
+
+    if (allCorrect) {
       setRevealAnswer(true);
       setShowPlayer(true);
       setIsPlaying(false);
-      alert('✅ Bonne réponse, bravo !');
-    } else {
-      alert('❌ Ah, c\'est dommage...');
     }
   };
 
+
   // 🎵 Passer au morceau suivant (prévoir de l'aléatoire)
   const handleNext = () => {
-    setGuess('');
+    setTitleCorrect(false);
+    setArtistCorrect(false);
+    setInputErrorTitle(false);
+    setInputErrorArtist(false);
+
+    setTitleGuess('');
+    setArtistGuess('');
     setTimer(30);
     setRevealAnswer(false);
     setShowPlayer(false);
@@ -103,11 +156,34 @@ useEffect(() => {
 
   // ⏳ Si le site rame, ça affiche un chargement pour faire patienter
   if (!currentTrack) {
-    return <p className="text-center mt-8">Chargement du blindtest...<br/>Mais en vrai si vous voyez ça c'est probablement que ça bugue...</p>;
+    return <p className="text-center mt-8">Chargement du blindtest...<br />Mais en vrai si vous voyez ça,<br /> c'est probablement que ça bugue...</p>;
   }
 
   return (
     <div className="flex flex-col items-center p-8 space-y-6 bg-white rounded-lg shadow w-full max-w-xl mx-auto mt-8">
+
+      {/* Choisir de deviner Titre, Artiste ou les deux */}
+      <div className="flex gap-4 items-center">
+        <span className="text-sm font-semibold">Deviner :</span>
+        {['title', 'artist'].map((part) => (
+          <button
+            key={part}
+            onClick={() => {
+              if (answerParts.includes(part)) {
+                setAnswerParts(answerParts.filter((p) => p !== part));
+              } else {
+                setAnswerParts([...answerParts, part]);
+              }
+            }}
+            className={`text-sm px-4 py-1 rounded border ${answerParts.includes(part)
+              ? 'bg-purple-500 text-white border-purple-500'
+              : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
+              }`}
+          >
+            {part === 'title' ? 'Titre' : 'Artiste'}
+          </button>
+        ))}
+      </div>
 
       {/* ✅ Sélection des catégories */}
       <CategorySelector
@@ -117,64 +193,109 @@ useEffect(() => {
 
       {/* ▶️ Bouton pour lancer la musique */}
       {!revealAnswer && !isPlaying && (
-        <button
-          onClick={handlePlay}
-          className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
-        >
-          ▶️ Lancer l'extrait
-        </button>
+        <>
+          <button
+            onClick={handlePlay}
+            className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded transition"
+          >
+            ▶ Lancer l'extrait
+          </button>
+
+          {/* ❌ Message d'erreur si aucun champ n'est sélectionné */}
+          {errorMessage && (
+            <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+          )}
+        </>
       )}
 
       {/* ⏱ Affichage du timer */}
-      {!revealAnswer && isPlaying && (
-        <p className="text-sm text-gray-600">
-          ⏳ Temps restant : {timer}s
-        </p>
+      {
+        !revealAnswer && isPlaying && (
+          <p className="text-sm text-gray-600">
+            ⏳ Temps restant : {timer}s
+          </p>
+        )}
+
+      {/* 📝 Champ pour le titre. Ne s'affiche que quand "Titre" est affiché */}
+      {answerParts.includes('title') && (
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Quoi que c'est ? (titre)"
+            className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
+            value={titleGuess}
+            onChange={(e) => setTitleGuess(e.target.value)}
+            disabled={revealAnswer}
+          />
+          {titleCorrect && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
+          )}
+
+          {inputErrorTitle && (
+            <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
+          )}
+        </div>
       )}
 
-      {/* 📝 Champ de réponse */}
-      <input
-        type="text"
-        placeholder="Devine le titre du morceau"
-        className="border border-gray-300 rounded px-4 text-center py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-        value={guess}
-        onChange={(e) => setGuess(e.target.value)}
-        disabled={revealAnswer}
-      />
+
+      {/* 📝 Champ pour l’artiste. Ne s'affiche que quand "Artiste" est affiché */}
+      {answerParts.includes('artist') && (
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder="Qui que c'est ? (artiste)"
+            className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
+            value={artistGuess}
+            onChange={(e) => setArtistGuess(e.target.value)}
+            disabled={revealAnswer}
+          />
+          {artistCorrect && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
+          )}
+
+          {inputErrorArtist && (
+            <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
+          )}
+        </div>
+      )}
+
 
       {/* ✅ Bouton pour valider la réponse */}
       <button
         onClick={handleCheck}
         disabled={revealAnswer || !isPlaying}
-        className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded transition"
+        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
       >
-        ✅ Valider la réponse
+        Valider la réponse
       </button>
 
+
       {/* 🎥 Lecteur Youtube visible uniquement à la fin du timer, ou quand la bonne réponse a été trouvée */}
-      {showPlayer && (
-        <YoutubePlayer
-          videoId={currentTrack.videoId}
-          start={currentTrack.start}
-          end={currentTrack.start + 50} // On joue 50 secondes à partir du début
-          showVideo={revealAnswer}
-        />
-      )}
+      {
+        showPlayer && (
+          <YoutubePlayer
+            videoId={currentTrack.videoId}
+            start={currentTrack.start}
+            end={currentTrack.start + 50} // On joue 50 secondes à partir du début
+            showVideo={revealAnswer}
+          />
+        )}
 
       {/* 🎉 Affichage de la bonne réponse */}
-      {revealAnswer && (
-        <div className="text-center">
-          <p className="text-lg text-gray-700">
-            🎵 C'était : <strong>{currentTrack.artist} - {currentTrack.title}</strong>
-          </p>
-          <button
-            onClick={handleNext}
-            className="mt-4 bg-purple-500 hover:bg-purple-600 text-white py-2 px-6 rounded"
-          >
-            ▶️ Morceau suivant
-          </button>
-        </div>
-      )}
-    </div>
+      {
+        revealAnswer && (
+          <div className="text-center">
+            <p className="text-lg text-gray-700">
+              🎵 <strong>{currentTrack.artist} - {currentTrack.title}</strong>
+            </p>
+            <button
+              onClick={handleNext}
+              className="mt-4 bg-purple-500 hover:bg-purple-600 text-white py-2 px-6 rounded"
+            >
+              ▶ Morceau suivant
+            </button>
+          </div>
+        )}
+    </div >
   );
 }
