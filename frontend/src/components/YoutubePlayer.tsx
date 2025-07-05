@@ -14,7 +14,7 @@ export default function YoutubePlayer({ videoId, start, showVideo }: YoutubePlay
     playerVars: {
       autoplay: 1,
       start,
-      end: start + 50, // On joue 50 secondes à partir du début
+      end: start + 50, // On joue 50 secondes à partir du début (30s pour deviner + 20s pour kiffer)
     },
   };
 

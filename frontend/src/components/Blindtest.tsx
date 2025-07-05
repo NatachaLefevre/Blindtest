@@ -221,7 +221,7 @@ export default function Blindtest() {
         <div className="relative w-full">
           <input
             type="text"
-            placeholder="Quoi que c'est ? (titre)"
+            placeholder="Quoi c'est ? (titre)"
             className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
             value={titleGuess}
             onChange={(e) => setTitleGuess(e.target.value)}
@@ -243,7 +243,7 @@ export default function Blindtest() {
         <div className="relative w-full">
           <input
             type="text"
-            placeholder="Qui que c'est ? (artiste)"
+            placeholder="Qui qui chante ? (interprète)"
             className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
             value={artistGuess}
             onChange={(e) => setArtistGuess(e.target.value)}
