@@ -56,12 +56,42 @@ while (true) {
 
     // Fonction pour séparer l'œuvre de l'artiste ^^
     let parsedTitle = title;
-    let artist = 'Inconnu';
+    let artist = '';
     if (title.includes('-')) {
       const parts = title.split('-');
       artist = parts[0].trim();
       parsedTitle = parts.slice(1).join('-').trim();
     }
+
+    // 🔁 Appel pour récupérer la durée exacte de la vidéo
+const videoRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${API_KEY}`);
+const videoData = await videoRes.json();
+
+let start = 30; // valeur par défaut
+try {
+  const isoDuration = videoData.items[0].contentDetails.duration;
+
+  // 🔢 Fonction utilitaire pour convertir PT3M14S en secondes
+  function parseDuration(iso) {
+    const match = iso.match(/PT(?:(\d+)M)?(?:(\d+)S)?/);
+    const minutes = parseInt(match[1] || '0', 10);
+    const seconds = parseInt(match[2] || '0', 10);
+    return minutes * 60 + seconds;
+  }
+
+  const totalSeconds = parseDuration(isoDuration);
+
+  if (totalSeconds > 90) {
+    const maxStart = totalSeconds - 60; // On garde 50s de marge
+    start = Math.floor(Math.random() * maxStart); // Start aléatoire entre 0 et max
+  } else {
+    start = 5; // Si trop court, on démarre au tout début
+  }
+
+} catch (err) {
+  console.warn(`⚠️ Impossible de lire la durée de ${title}, start=30 par défaut`);
+}
+
 
     //Classification des morceaux. Ajouter une catégorie personnalisée dans la commande
     allVideos.push({
@@ -69,7 +99,7 @@ while (true) {
       artist,
       videoId,
       category: customCategory,
-      start: 30,
+      start, // start aléatoire entre 0 et max (pas de ":" dans ce cas)
       verified: false
     });
   }

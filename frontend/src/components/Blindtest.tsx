@@ -209,8 +209,7 @@ export default function Blindtest() {
       )}
 
       {/* ⏱ Affichage du timer */}
-      {
-        !revealAnswer && isPlaying && (
+      {!revealAnswer && isPlaying && (
           <p className="text-sm text-gray-600">
             ⏳ Temps restant : {timer}s
           </p>
@@ -271,8 +270,7 @@ export default function Blindtest() {
 
 
       {/* 🎥 Lecteur Youtube visible uniquement à la fin du timer, ou quand la bonne réponse a été trouvée */}
-      {
-        showPlayer && (
+      {showPlayer && (
           <YoutubePlayer
             videoId={currentTrack.videoId}
             start={currentTrack.start}
@@ -282,11 +280,13 @@ export default function Blindtest() {
         )}
 
       {/* 🎉 Affichage de la bonne réponse */}
-      {
-        revealAnswer && (
+      {revealAnswer && (
           <div className="text-center">
             <p className="text-lg text-gray-700">
-              🎵 <strong>{currentTrack.artist} - {currentTrack.title}</strong>
+
+              {/* Si pas d'artiste, pas de tiret devant le titre */}
+              🎵 <strong>{currentTrack.artist ? `${currentTrack.artist} - ` : ''}  {currentTrack.title}</strong>
+
             </p>
             <button
               onClick={handleNext}
