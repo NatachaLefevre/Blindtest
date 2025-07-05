@@ -1,3 +1,7 @@
+// Pour lancer le script : commande type 
+// node importPlaylist.mjs "https://www.youtube.com/urlplaylist" "catégorie"
+
+
 import 'dotenv/config';
 import fetch from 'node-fetch';
 
@@ -18,8 +22,12 @@ function extractPlaylistId(url) {
 }
 
 const playlistUrl = process.argv[2];
+const customCategory = process.argv[3] || 'à trier'; // 👈 si aucune catégorie donnée, valeur par défaut
+
+// Vérification de l'ID de la playlist
 const playlistId = extractPlaylistId(playlistUrl);
 
+// Si l'ID n'est pas trouvé, on affiche un message d'erreur et on quitte le script
 if (!playlistId) {
   console.error('❌ Veuillez fournir une URL de playlist YouTube valide.');
   process.exit(1);
@@ -29,6 +37,7 @@ console.log(`🔎 Lecture de la playlist ${playlistId}...`);
 
 const allVideos = [];
 
+// nextPageToken permet de gérer la pagination (par défaut, l'API Youtube limite à 50 vidéos par appel)
 let nextPageToken = '';
 while (true) {
   const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&pageToken=${nextPageToken}&key=${API_KEY}`;
@@ -45,7 +54,7 @@ while (true) {
     const title = snippet.title;
     const videoId = snippet.resourceId.videoId;
 
-    // Tentative de découpage simple du titre pour trouver artist / title
+    // Fonction pour séparer l'œuvre de l'artiste ^^
     let parsedTitle = title;
     let artist = 'Inconnu';
     if (title.includes('-')) {
@@ -54,11 +63,12 @@ while (true) {
       parsedTitle = parts.slice(1).join('-').trim();
     }
 
+    //Classification des morceaux. Ajouter une catégorie personnalisée dans la commande
     allVideos.push({
       title: parsedTitle,
       artist,
       videoId,
-      category: 'à trier',
+      category: customCategory,
       start: 30,
       verified: false
     });
