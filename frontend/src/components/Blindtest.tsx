@@ -32,7 +32,7 @@ export default function Blindtest() {
   const [showPlayer, setShowPlayer] = useState(false);
 
   // ⏱ Timer pour le jeu, initialisé à 30 secondes
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState(1);
 
   // 🔊 État pour savoir si un extrait est en cours de lecture
   const [isPlaying, setIsPlaying] = useState(false);
@@ -109,7 +109,7 @@ export default function Blindtest() {
   };
 
 
-  // ✅ Validation des réponses
+  // ✅ Conditions des validation des réponses
 
   const handleCheck = () => {
     const userTitle = titleGuess.trim().toLowerCase();
@@ -147,7 +147,7 @@ export default function Blindtest() {
 
     setTitleGuess('');
     setArtistGuess('');
-    setTimer(30);
+    setTimer(1);
     setRevealAnswer(false);
     setShowPlayer(false);
     setIsPlaying(false);
@@ -156,7 +156,7 @@ export default function Blindtest() {
 
   // ⏳ Si le site rame, ça affiche un chargement pour faire patienter
   if (!currentTrack) {
-    return <p className="text-center mt-8">Chargement du blindtest...<br />Mais en vrai si vous voyez ça,<br /> c'est probablement que ça bugue...</p>;
+    return <p className="text-center mt-8">Veuillez patienter...</p>;
   }
 
   return (
@@ -221,7 +221,7 @@ export default function Blindtest() {
         <div className="relative w-full">
           <input
             type="text"
-            placeholder="Quoi c'est ? (titre)"
+            placeholder="Quoi que c'est ? (Titre)"
             className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
             value={titleGuess}
             onChange={(e) => setTitleGuess(e.target.value)}
@@ -243,7 +243,7 @@ export default function Blindtest() {
         <div className="relative w-full">
           <input
             type="text"
-            placeholder="Qui qui chante ? (interprète)"
+            placeholder="Qui qui c'est ? (Artiste)"
             className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
             value={artistGuess}
             onChange={(e) => setArtistGuess(e.target.value)}
