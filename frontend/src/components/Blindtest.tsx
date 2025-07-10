@@ -14,6 +14,7 @@ type Track = {
 export default function Blindtest() {
 
   // 📝 États pour gérer les différentes fonctions du jeu.
+  // (Possibilité de réduire le nombre de useState par la suite en les regroupant. 
 
   // ⚙️ Deviner le titre, l'artiste ou les deux
   const [answerParts, setAnswerParts] = useState<string[]>(['title']);
@@ -32,7 +33,7 @@ export default function Blindtest() {
   const [showPlayer, setShowPlayer] = useState(false);
 
   // ⏱ Timer pour le jeu, initialisé à 30 secondes
-  const [timer, setTimer] = useState(1);
+  const [timer, setTimer] = useState(30);
 
   // 🔊 État pour savoir si un extrait est en cours de lecture
   const [isPlaying, setIsPlaying] = useState(false);
@@ -46,20 +47,18 @@ export default function Blindtest() {
   // 🆕 Message d'erreur affiché si aucun champ "Titre" ou "Artiste" n'est sélectionné
   const [errorMessage, setErrorMessage] = useState('');
 
-  // ✅ États pour valider ou invalider les réponses
+  // ✅ États pour valider ou invalider les réponses Titre et Artiste
   const [titleCorrect, setTitleCorrect] = useState(false);
   const [artistCorrect, setArtistCorrect] = useState(false);
   const [inputErrorTitle, setInputErrorTitle] = useState(false);
   const [inputErrorArtist, setInputErrorArtist] = useState(false);
 
-  // (Possibilité de réduire le nombre de useState. 
-  // On pourrait regrouper guess et revealAnswer dans un seul objet d'état, mais pour la clarté, 
-  // on les garde séparés pour l'instant.)
 
 
   // 🔁 Appel API pour récupérer les morceaux depuis Supabase
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/tracks?select=*`, {
+    fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/tracks?select=*&verified=is.true`, {
+
       headers: {
         apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
@@ -110,6 +109,8 @@ export default function Blindtest() {
 
 
   // ✅ Conditions des validation des réponses
+  // Vérifie si le titre et/ou l'artiste sont corrects
+  // Si les deux sont corrects, on affiche la réponse et on arrête le lecteur
 
   const handleCheck = () => {
     const userTitle = titleGuess.trim().toLowerCase();
@@ -147,7 +148,7 @@ export default function Blindtest() {
 
     setTitleGuess('');
     setArtistGuess('');
-    setTimer(1);
+    setTimer(30);
     setRevealAnswer(false);
     setShowPlayer(false);
     setIsPlaying(false);
