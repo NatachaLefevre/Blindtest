@@ -128,8 +128,8 @@ export default function Blindtest() {
     setArtistCorrect(wantsArtist && userArtist === correctArtist);
 
     const allCorrect = isTitleCorrect && isArtistCorrect;
-    setInputErrorTitle (!isTitleCorrect);
-    setInputErrorArtist (!isArtistCorrect);
+    setInputErrorTitle(!isTitleCorrect);
+    setInputErrorArtist(!isArtistCorrect);
 
     if (allCorrect) {
       setRevealAnswer(true);
@@ -176,7 +176,7 @@ export default function Blindtest() {
                 setAnswerParts([...answerParts, part]);
               }
             }}
-            className={`text-sm px-4 py-1 rounded border ${answerParts.includes(part)
+            className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerParts.includes(part)
               ? 'bg-purple-500 text-white border-purple-500'
               : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
               }`}
@@ -187,17 +187,20 @@ export default function Blindtest() {
       </div>
 
       {/* ✅ Sélection des catégories */}
+      <div className="text-center mb-4">
+      <span className="text-sm font-semibold">Catégories</span>
       <CategorySelector
         selectedCategories={selectedCategories}
         onChange={setSelectedCategories}
       />
+      </div>
 
       {/* ▶️ Bouton pour lancer la musique */}
       {!revealAnswer && !isPlaying && (
         <>
           <button
             onClick={handlePlay}
-            className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded transition"
+            className="cursor-pointer bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded transition"
           >
             ▶ Lancer l'extrait
           </button>
@@ -211,92 +214,99 @@ export default function Blindtest() {
 
       {/* ⏱ Affichage du timer */}
       {!revealAnswer && isPlaying && (
-          <p className="text-sm text-gray-600">
-            ⏳ Temps restant : {timer}s
-          </p>
+        <p className="text-sm text-gray-600">
+          ⏳ Temps restant : {timer}s
+        </p>
+      )}
+
+      {/* Valider la réponse en cliquant sur le bouton ou en appuyant sur Entrée*/}
+      <form onSubmit={(e) => {
+        e.preventDefault(); // 🔒 Empêche le rechargement de la page
+        handleCheck();      // ✅ Déclenche la vérif de la réponse
+      }}
+        className="w-full text-center space-y-4">
+
+        {/* 📝 Champ pour le titre. Ne s'affiche que quand "Titre" est affiché */}
+        {answerParts.includes('title') && (
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Quoi que c'est ? (Titre)"
+              className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
+              value={titleGuess}
+              onChange={(e) => setTitleGuess(e.target.value)}
+              disabled={revealAnswer}
+            />
+            {titleCorrect && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
+            )}
+
+            {inputErrorTitle && (
+              <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
+            )}
+          </div>
         )}
 
-      {/* 📝 Champ pour le titre. Ne s'affiche que quand "Titre" est affiché */}
-      {answerParts.includes('title') && (
-        <div className="relative w-full">
-          <input
-            type="text"
-            placeholder="Quoi que c'est ? (Titre)"
-            className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
-            value={titleGuess}
-            onChange={(e) => setTitleGuess(e.target.value)}
-            disabled={revealAnswer}
-          />
-          {titleCorrect && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
-          )}
+        {/* 📝 Champ pour l’artiste. Ne s'affiche que quand "Artiste" est affiché */}
+        {answerParts.includes('artist') && (
+          <div className="relative w-full">
+            <input
+              type="text"
+              placeholder="Qui qui c'est ? (Artiste)"
+              className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
+              value={artistGuess}
+              onChange={(e) => setArtistGuess(e.target.value)}
+              disabled={revealAnswer}
+            />
+            {artistCorrect && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
+            )}
 
-          {inputErrorTitle && (
-            <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
-          )}
-        </div>
-      )}
+            {inputErrorArtist && (
+              <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
+            )}
+          </div>
+        )}
 
+        {/* ✅ Bouton pour valider la réponse */}
+        <button
+          type="submit" // 🆗 Ou on peut ne rien mettre : par défaut c’est "submit"
+          disabled={revealAnswer || !isPlaying}
+          className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
+        >
+          Valider la réponse
+        </button>
 
-      {/* 📝 Champ pour l’artiste. Ne s'affiche que quand "Artiste" est affiché */}
-      {answerParts.includes('artist') && (
-        <div className="relative w-full">
-          <input
-            type="text"
-            placeholder="Qui qui c'est ? (Artiste)"
-            className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
-            value={artistGuess}
-            onChange={(e) => setArtistGuess(e.target.value)}
-            disabled={revealAnswer}
-          />
-          {artistCorrect && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
-          )}
-
-          {inputErrorArtist && (
-            <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
-          )}
-        </div>
-      )}
-
-
-      {/* ✅ Bouton pour valider la réponse */}
-      <button
-        onClick={handleCheck}
-        disabled={revealAnswer || !isPlaying}
-        className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
-      >
-        Valider la réponse
-      </button>
+      </form>
 
 
       {/* 🎥 Lecteur Youtube visible uniquement à la fin du timer, ou quand la bonne réponse a été trouvée */}
       {showPlayer && (
-          <YoutubePlayer
-            videoId={currentTrack.videoId}
-            start={currentTrack.start}
-            end={currentTrack.start + 50} // On joue 50 secondes à partir du début
-            showVideo={revealAnswer}
-          />
-        )}
+        <YoutubePlayer
+          videoId={currentTrack.videoId}
+          start={currentTrack.start}
+          end={currentTrack.start + 50} // On joue 50 secondes à partir du début
+          showVideo={revealAnswer}
+        />
+      )}
 
       {/* 🎉 Affichage de la bonne réponse */}
       {revealAnswer && (
-          <div className="text-center">
-            <p className="text-lg text-gray-700">
+        <div className="text-center">
+          <p className="text-lg text-gray-700">
 
-              {/* Si pas d'artiste, pas de tiret devant le titre */}
-              🎵 <strong>{currentTrack.artist ? `${currentTrack.artist} - ` : ''}  {currentTrack.title}</strong>
+            {/* Si pas d'artiste, pas de tiret devant le titre */}
+            🎵 <strong>{currentTrack.artist ? `${currentTrack.artist} - ` : ''}  {currentTrack.title}</strong>
 
-            </p>
-            <button
-              onClick={handleNext}
-              className="mt-4 bg-purple-500 hover:bg-purple-600 text-white py-2 px-6 rounded"
-            >
-              ▶ Morceau suivant
-            </button>
-          </div>
-        )}
+          </p>
+          <button
+            onClick={handleNext}
+            className="cursor-pointer mt-4 bg-purple-500 hover:bg-purple-600 text-white py-2 px-6 rounded"
+          >
+            ▶ Morceau suivant
+          </button>
+        </div>
+      )}
     </div >
   );
 }

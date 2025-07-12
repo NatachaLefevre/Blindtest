@@ -28,7 +28,7 @@ export default function CategorySelector({ selectedCategories, onChange }: Props
 
 
   return (
-    <div className="flex flex-wrap gap-4 justify-center my-6">
+    <div className="flex flex-wrap gap-4 justify-center mt-2 mb-4">
       {categories.map((cat) => {
       const isSelected = selectedCategories.includes(cat);
 
@@ -36,7 +36,7 @@ export default function CategorySelector({ selectedCategories, onChange }: Props
       <button
         key={cat}
         onClick={() => toggleCategory(cat)}
-        className={`text-sm px-4 py-2 rounded border transition duration-200 ${isSelected
+        className={`cursor-pointer text-sm px-4 py-2 rounded border transition duration-200 ${isSelected
             ? 'bg-orange-500 text-white border-orange-600'
             : 'bg-white hover:bg-orange-100 text-orange-600 border-orange-400'
           } hover:shadow`}
