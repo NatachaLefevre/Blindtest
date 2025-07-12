@@ -11,6 +11,50 @@ type Track = {
   category: string;
 };
 
+// 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
+function normalize(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize("NFD") // décompose les accents
+    .replace(/[\u0300-\u036f]/g, '') // supprime les accents
+    .replace(/[^\w\s]|_/g, '') // enlève la ponctuation
+    .replace(/\s+/g, ' ') // espace simple
+    .trim();
+}
+
+// 🔍 Fonction pour comparer la réponse du joueur et la réponse de la base de données
+function isCloseEnough(a: string, b: string): boolean {
+  const normA = normalize(a);
+  const normB = normalize(b);
+  const distance = levenshtein(normA, normB);
+  const maxLen = Math.max(normA.length, normB.length);
+  return distance / maxLen < 0.20; // 20% de différence max
+}
+
+
+// 🔠 Fonction de distance de Levenshtein
+function levenshtein(a: string, b: string): number {
+  const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
+    Array.from({ length: b.length + 1 }, (_, j) =>
+      i === 0 ? j : j === 0 ? i : 0
+    )
+  );
+
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+
+  return matrix[a.length][b.length];
+}
+
+
 export default function Blindtest() {
 
   // 📝 États pour gérer les différentes fonctions du jeu.
@@ -96,10 +140,11 @@ export default function Blindtest() {
     return () => clearTimeout(countdown);
   }, [isPlaying, timer, revealAnswer]);
 
-  // ▶️ Pour lancer l'extrait (prévoir aléatoire). Message d'erreur si aucun champ n'est sélectionné
+  // ▶️ Pour lancer l'extrait (prévoir aléatoire). Message d'erreur si aucun champ n'est sélectionné.
+  // Il faut retirer le message quand un champ est sélectionné.
   const handlePlay = () => {
     if (answerParts.length === 0) {
-      setErrorMessage('❌ Sélectionne au moins "Titre" ou "Artiste" pour commencer.');
+      setErrorMessage('❌ Il faut sélectionner au moins "Titre" ou "Artiste" pour commencer, mon petit lapin. Sinon, a peu pas n\'avoir de blindtest, comprends-tu.');
       return;
     }
     setErrorMessage('');
@@ -111,21 +156,26 @@ export default function Blindtest() {
   // ✅ Conditions des validation des réponses
   // Vérifie si le titre et/ou l'artiste sont corrects
   // Si les deux sont corrects, on affiche la réponse et on arrête le lecteur
+  // On utilise la fonction normalize pour comparer les réponses de l'utilisateur avec celles du morceau
 
   const handleCheck = () => {
-    const userTitle = titleGuess.trim().toLowerCase();
-    const userArtist = artistGuess.trim().toLowerCase();
-    const correctTitle = currentTrack.title.trim().toLowerCase();
-    const correctArtist = currentTrack.artist.trim().toLowerCase();
+    const userTitle = titleGuess.trim();
+    const userArtist = artistGuess.trim();
+    const correctTitle = currentTrack.title.trim();
+    const correctArtist = currentTrack.artist.trim();
 
     const wantsTitle = answerParts.includes('title');
-    const wantsArtist = answerParts.includes('artist');
+    const wantsArtist = answerParts.includes('artist') && currentTrack.artist.trim() !== '';
+    // Si l’artiste est vide dans la BDD, on ne cherche pas à valider la réponse
 
-    const isTitleCorrect = !wantsTitle || userTitle === correctTitle;
-    const isArtistCorrect = !wantsArtist || userArtist === correctArtist;
 
-    setTitleCorrect(wantsTitle && userTitle === correctTitle);
-    setArtistCorrect(wantsArtist && userArtist === correctArtist);
+    const isTitleCorrect = !wantsTitle || isCloseEnough(userTitle, correctTitle);
+    const isArtistCorrect = !wantsArtist || isCloseEnough(userArtist, correctArtist);
+
+
+    setTitleCorrect(wantsTitle && isTitleCorrect);
+    setArtistCorrect(wantsArtist && isArtistCorrect);
+
 
     const allCorrect = isTitleCorrect && isArtistCorrect;
     setInputErrorTitle(!isTitleCorrect);
@@ -188,11 +238,11 @@ export default function Blindtest() {
 
       {/* ✅ Sélection des catégories */}
       <div className="text-center mb-4">
-      <span className="text-sm font-semibold">Catégories</span>
-      <CategorySelector
-        selectedCategories={selectedCategories}
-        onChange={setSelectedCategories}
-      />
+        <span className="text-sm font-semibold">Catégories</span>
+        <CategorySelector
+          selectedCategories={selectedCategories}
+          onChange={setSelectedCategories}
+        />
       </div>
 
       {/* ▶️ Bouton pour lancer la musique */}
@@ -252,7 +302,12 @@ export default function Blindtest() {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="Qui qui c'est ? (Artiste)"
+              placeholder={
+                // Si l'artiste est vide dans la BDD, on affiche un message différent
+                currentTrack.artist.trim() === ''
+                  ? 'Artiste non connu.e (ne rien écrire)'
+                  : "Qui qui c'est ? (Artiste)"
+              }
               className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
               value={artistGuess}
               onChange={(e) => setArtistGuess(e.target.value)}
