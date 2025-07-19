@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useReducer, useState, useEffect } from 'react';
+import { gameReducer, initialGameState } from './gameReducer';
 import YoutubePlayer from './YoutubePlayer';
 import CategorySelector from './CategorySelector';
 
@@ -31,7 +32,6 @@ function isCloseEnough(a: string, b: string): boolean {
   return distance / maxLen < 0.20; // 20% de différence max
 }
 
-
 // 🔠 Fonction de distance de Levenshtein
 function levenshtein(a: string, b: string): number {
   const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
@@ -58,29 +58,13 @@ function levenshtein(a: string, b: string): number {
 export default function Blindtest() {
 
   // 📝 États pour gérer les différentes fonctions du jeu.
-  // (Possibilité de réduire le nombre de useState par la suite en les regroupant. 
+  // Ils sont regroupés pour simplifier la gestion de l'état du jeu
 
   // ⚙️ Deviner le titre, l'artiste ou les deux
   const [answerParts, setAnswerParts] = useState<string[]>(['title']);
 
-  // Réponses séparées pour le titre et l'artiste
-  const [titleGuess, setTitleGuess] = useState('');
-  const [artistGuess, setArtistGuess] = useState('');
-
-  // 📍 Index du morceau actuel dans la liste filtrée
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-
-  // 🕵️‍♂️ État pour savoir si la réponse doit être révélée
-  const [revealAnswer, setRevealAnswer] = useState(false);
-
-  // 🎥 État pour afficher le lecteur Youtube
-  const [showPlayer, setShowPlayer] = useState(false);
-
-  // ⏱ Timer pour le jeu, initialisé à 30 secondes
-  const [timer, setTimer] = useState(30);
-
-  // 🔊 État pour savoir si un extrait est en cours de lecture
-  const [isPlaying, setIsPlaying] = useState(false);
+  // 🧠 États du jeu centralisés via useReducer. GameState se trouve dans GameReducer.ts
+  const [gameState, dispatch] = useReducer(gameReducer, initialGameState);
 
   // ✅ Catégories cochées par l'utilisateur
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -122,36 +106,39 @@ export default function Blindtest() {
       selectedCategories.includes(track.category)
   );
 
+  // 📝 Les guesses du joueur pour le titre et l'artiste
+  const { titleGuess, artistGuess } = gameState;
+
   // 🎯 Le morceau en cours depuis la liste filtrée
-  const currentTrack = filteredTracks[currentTrackIndex];
+  const currentTrack = filteredTracks[gameState.currentTrackIndex];
 
   // ⏱ Timer déclenché uniquement si un extrait est en cours
   useEffect(() => {
     let countdown: NodeJS.Timeout;
-    if (isPlaying && timer > 0 && !revealAnswer) {
-      countdown = setTimeout(() => setTimer(timer - 1), 1000);
+
+    if (gameState.isPlaying && gameState.timer > 0 && !gameState.revealAnswer) {
+      countdown = setTimeout(() => dispatch({ type: 'TICK' }), 1000);
     }
 
-    // 🚨 Si le temps est écoulé : on montre la réponse
-    if (timer === 0 && !revealAnswer) {
-      setRevealAnswer(true);
-      setShowPlayer(true);
+    if (gameState.timer === 0 && !gameState.revealAnswer) {
+      dispatch({ type: 'REVEAL_ANSWER' });
     }
 
     return () => clearTimeout(countdown);
-  }, [isPlaying, timer, revealAnswer]);
+  }, [gameState]);
+
 
   // ▶️ Pour lancer l'extrait (prévoir aléatoire). Message d'erreur si aucun champ n'est sélectionné.
   // Il faut retirer le message quand un champ est sélectionné.
   const handlePlay = () => {
     if (answerParts.length === 0) {
-      setErrorMessage('❌ Il faut sélectionner au moins "Titre" ou "Artiste" pour commencer, mon petit lapin. Sinon, a peu pas n\'avoir de blindtest, comprends-tu.');
+      setErrorMessage('❌ Il faut sélectionner au moins "Titre" ou "Artiste" pour commencer, mon petit lapin.');
       return;
     }
     setErrorMessage('');
-    setIsPlaying(true);
-    setShowPlayer(true);
+    dispatch({ type: 'START_GAME' });
   };
+
 
 
   // ✅ Conditions des validation des réponses
@@ -182,9 +169,8 @@ export default function Blindtest() {
 
 
     if (allCorrect) {
-      setRevealAnswer(true);
-      setShowPlayer(true);
-      setIsPlaying(false);
+      dispatch({ type: 'REVEAL_ANSWER' });
+
     }
   };
 
@@ -198,14 +184,12 @@ export default function Blindtest() {
       inputErrorArtist: false,
     });
 
-    setTitleGuess('');
-    setArtistGuess('');
-    setTimer(30);
-    setRevealAnswer(false);
-    setShowPlayer(false);
-    setIsPlaying(false);
-    setCurrentTrackIndex((prev) => (prev + 1) % filteredTracks.length);
+    dispatch({
+      type: 'NEXT_TRACK',
+      totalTracks: filteredTracks.length,
+    });
   };
+
 
   // ⏳ Si le site rame, ça affiche un chargement pour faire patienter
   if (!currentTrack) {
@@ -248,7 +232,7 @@ export default function Blindtest() {
       </div>
 
       {/* ▶️ Bouton pour lancer la musique */}
-      {!revealAnswer && !isPlaying && (
+      {!gameState.revealAnswer && !gameState.isPlaying && (
         <>
           <button
             onClick={handlePlay}
@@ -265,9 +249,9 @@ export default function Blindtest() {
       )}
 
       {/* ⏱ Affichage du timer */}
-      {!revealAnswer && isPlaying && (
+      {!gameState.revealAnswer && gameState.isPlaying && (
         <p className="text-sm text-gray-600">
-          ⏳ Temps restant : {timer}s
+          ⏳ Temps restant : {gameState.timer}s
         </p>
       )}
 
@@ -286,8 +270,11 @@ export default function Blindtest() {
               placeholder="Quoi que c'est ? (Titre)"
               className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
               value={titleGuess}
-              onChange={(e) => setTitleGuess(e.target.value)}
-              disabled={revealAnswer}
+              onChange={(e) =>
+                dispatch({ type: 'SET_GUESS', payload: { title: e.target.value } })
+              }
+
+              disabled={gameState.revealAnswer}
             />
             {validationState.titleCorrect && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
@@ -312,8 +299,11 @@ export default function Blindtest() {
               }
               className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
               value={artistGuess}
-              onChange={(e) => setArtistGuess(e.target.value)}
-              disabled={revealAnswer}
+              onChange={(e) =>
+                dispatch({ type: 'SET_GUESS', payload: { artist: e.target.value } })
+              }
+
+              disabled={gameState.revealAnswer}
             />
             {validationState.artistCorrect && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
@@ -328,7 +318,7 @@ export default function Blindtest() {
         {/* ✅ Bouton pour valider la réponse */}
         <button
           type="submit" // 🆗 Ou on peut ne rien mettre : par défaut c’est "submit"
-          disabled={revealAnswer || !isPlaying}
+          disabled={gameState.revealAnswer || !gameState.isPlaying}
           className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
         >
           Valider la réponse
@@ -338,17 +328,17 @@ export default function Blindtest() {
 
 
       {/* 🎥 Lecteur Youtube visible uniquement à la fin du timer, ou quand la bonne réponse a été trouvée */}
-      {showPlayer && (
+      {gameState.showPlayer && (
         <YoutubePlayer
           videoId={currentTrack.videoId}
           start={currentTrack.start}
           end={currentTrack.start + 50} // On joue 50 secondes à partir du début
-          showVideo={revealAnswer}
+          showVideo={gameState.revealAnswer}
         />
       )}
 
       {/* 🎉 Affichage de la bonne réponse */}
-      {revealAnswer && (
+      {gameState.revealAnswer && (
         <div className="text-center">
           <p className="text-lg text-gray-700">
 
