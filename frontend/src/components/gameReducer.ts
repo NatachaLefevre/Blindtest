@@ -1,8 +1,7 @@
 // Ce fichier gère l'état du jeu pour le frontend de l'application.
 // Il utilise un reducer pour gérer les actions liées au jeu
 
-// import { useReducer } from 'react';
-// import { initialGameState, gameReducer, GameState, GameAction } from './gameReducer';
+// Gère les actions nécessaires pour le jeu
 export type GameState = {
   currentTrackIndex: number;
   revealAnswer: boolean;
@@ -13,6 +12,7 @@ export type GameState = {
   artistGuess: string;
 };
 
+
 // Les actions possibles pour le reducer
 export type GameAction =
   | { type: 'START_GAME' }
@@ -21,6 +21,9 @@ export type GameAction =
   | { type: 'TICK' }
   | { type: 'RESET' }
   | { type: 'SET_GUESS'; payload: { title?: string; artist?: string } }
+  | { type: 'SET_INDEX'; index: number }
+
+
 
 // L'état initial du jeu
 export const initialGameState: GameState = {
@@ -55,7 +58,7 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         ? { ...state, timer: state.timer - 1 }
         : state;
 
-    // On passe à la piste suivante
+    // On passe au morceau suivant
     // On remet le timer à 30 secondes
     // On cache le lecteur vidéo et on réinitialise les guesses
     case 'NEXT_TRACK':
@@ -77,6 +80,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
         titleGuess: action.payload.title ?? state.titleGuess,
         artistGuess: action.payload.artist ?? state.artistGuess,
       };
+
+    // On met à jour l'index du morceau actuel
+    case 'SET_INDEX':
+      return {
+        ...state,
+        currentTrackIndex: action.index,
+        revealAnswer: false,
+        showPlayer: false,
+        timer: 30,
+        isPlaying: false,
+        titleGuess: '',
+        artistGuess: '',
+      };
+
 
     // On réinitialise l'état du jeu
     case 'RESET':

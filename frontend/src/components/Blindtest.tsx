@@ -1,7 +1,10 @@
-import { useReducer, useState, useEffect } from 'react';
+import { useReducer, useState, useEffect, useMemo } from 'react';
 import { gameReducer, initialGameState } from './gameReducer';
 import YoutubePlayer from './YoutubePlayer';
 import CategorySelector from './CategorySelector';
+
+// 📝 Queue de l'index
+// (déplacé dans le composant Blindtest)
 
 // 🎵 Définition du type de morceau utilisé
 type Track = {
@@ -11,6 +14,17 @@ type Track = {
   start: number;
   category: string;
 };
+
+
+// 🔀 Fonction pour mélanger un tableau
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 // 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
 function normalize(str: string): string {
@@ -33,6 +47,7 @@ function isCloseEnough(a: string, b: string): boolean {
 }
 
 // 🔠 Fonction de distance de Levenshtein
+// Permet d'autoriser des erreurs de frappe
 function levenshtein(a: string, b: string): number {
   const matrix = Array.from({ length: a.length + 1 }, (_, i) =>
     Array.from({ length: b.length + 1 }, (_, j) =>
@@ -65,6 +80,9 @@ export default function Blindtest() {
 
   // 🧠 États du jeu centralisés via useReducer. GameState se trouve dans GameReducer.ts
   const [gameState, dispatch] = useReducer(gameReducer, initialGameState);
+
+  // 📝 Queue de l'index
+  const [shuffledQueue, setShuffledQueue] = useState<number[]>([]);
 
   // ✅ Catégories cochées par l'utilisateur
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -100,11 +118,31 @@ export default function Blindtest() {
 
 
   // 🔎 Les morceaux sont filtrés selon les catégories sélectionnées par les joueurs
-  const filteredTracks = trackList.filter(
-    (track) =>
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(track.category)
-  );
+  const filteredTracks = useMemo(() => {
+    return trackList.filter(
+      (track) =>
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(track.category)
+    );
+  }, [trackList, selectedCategories]);
+
+
+  // 🃏 On mélange les morceaux filtrés pour qu'ils se lancent de manière aléatoire
+  useEffect(() => {
+    if (filteredTracks.length > 0) {
+
+      // On crée une liste d'indices pour les morceaux filtrés pour pouvoir les mélanger facilement
+      const indices = filteredTracks.map((_, index) => index);
+
+      // On utilise le premier morceau mélangé pour démarrer le jeu
+      const shuffled = shuffleArray(indices);
+      const [first, ...rest] = shuffled;
+      dispatch({ type: 'SET_INDEX', index: first });
+      setShuffledQueue(rest);
+    }
+
+  }, [filteredTracks]);
+
 
   // 📝 Les guesses du joueur pour le titre et l'artiste
   const { titleGuess, artistGuess } = gameState;
@@ -114,18 +152,19 @@ export default function Blindtest() {
 
   // ⏱ Timer déclenché uniquement si un extrait est en cours
   useEffect(() => {
-    let countdown: NodeJS.Timeout;
-
     if (gameState.isPlaying && gameState.timer > 0 && !gameState.revealAnswer) {
-      countdown = setTimeout(() => dispatch({ type: 'TICK' }), 1000);
+      const countdown = setTimeout(() => dispatch({ type: 'TICK' }), 1000);
+      return () => clearTimeout(countdown);
     }
 
     if (gameState.timer === 0 && !gameState.revealAnswer) {
       dispatch({ type: 'REVEAL_ANSWER' });
     }
 
-    return () => clearTimeout(countdown);
+    // Sinon, pas de countdown = pas de nettoyage à faire
+    return () => { };
   }, [gameState]);
+
 
 
   // ▶️ Pour lancer l'extrait (prévoir aléatoire). Message d'erreur si aucun champ n'est sélectionné.
@@ -140,12 +179,7 @@ export default function Blindtest() {
   };
 
 
-
   // ✅ Conditions des validation des réponses
-  // Vérifie si le titre et/ou l'artiste sont corrects
-  // Si les deux sont corrects, on affiche la réponse et on arrête le lecteur
-  // On utilise la fonction normalize pour comparer les réponses de l'utilisateur avec celles du morceau
-
   const handleCheck = () => {
     const userTitle = titleGuess.trim();
     const userArtist = artistGuess.trim();
@@ -167,7 +201,7 @@ export default function Blindtest() {
       inputErrorArtist: wantsArtist && !isArtistCorrect,
     });
 
-
+    // Si les deux réponses sont correctes, on révèle la réponse
     if (allCorrect) {
       dispatch({ type: 'REVEAL_ANSWER' });
 
@@ -175,7 +209,7 @@ export default function Blindtest() {
   };
 
 
-  // 🎵 Passer au morceau suivant (prévoir de l'aléatoire)
+  // 🎵 Passer au morceau suivant
   const handleNext = () => {
     setValidationState({
       titleCorrect: false,
@@ -184,10 +218,20 @@ export default function Blindtest() {
       inputErrorArtist: false,
     });
 
-    dispatch({
-      type: 'NEXT_TRACK',
-      totalTracks: filteredTracks.length,
-    });
+    if (shuffledQueue.length === 0) {
+      // Rebooter la queue quand on a joué tous les morceaux
+      const indices = filteredTracks.map((_, index) => index);
+      const reshuffled = shuffleArray(indices);
+      dispatch({ type: 'SET_INDEX', index: reshuffled[0] });
+      setShuffledQueue(reshuffled.slice(1));
+    }
+
+    else {
+      const [nextIndex, ...rest] = shuffledQueue;
+      dispatch({ type: 'SET_INDEX', index: nextIndex });
+      setShuffledQueue(rest);
+    }
+
   };
 
 
