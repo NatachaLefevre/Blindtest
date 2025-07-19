@@ -91,12 +91,13 @@ export default function Blindtest() {
   // 🆕 Message d'erreur affiché si aucun champ "Titre" ou "Artiste" n'est sélectionné
   const [errorMessage, setErrorMessage] = useState('');
 
-  // ✅ États pour valider ou invalider les réponses Titre et Artiste
-  const [titleCorrect, setTitleCorrect] = useState(false);
-  const [artistCorrect, setArtistCorrect] = useState(false);
-  const [inputErrorTitle, setInputErrorTitle] = useState(false);
-  const [inputErrorArtist, setInputErrorArtist] = useState(false);
-
+  // ✅ États (regroupés) pour valider ou invalider les réponses Titre et Artiste
+  const [validationState, setValidationState] = useState({
+    titleCorrect: false,
+    artistCorrect: false,
+    inputErrorTitle: false,
+    inputErrorArtist: false,
+  });
 
 
   // 🔁 Appel API pour récupérer les morceaux depuis Supabase
@@ -168,18 +169,17 @@ export default function Blindtest() {
     const wantsArtist = answerParts.includes('artist') && currentTrack.artist.trim() !== '';
     // Si l’artiste est vide dans la BDD, on ne cherche pas à valider la réponse
 
-
     const isTitleCorrect = !wantsTitle || isCloseEnough(userTitle, correctTitle);
     const isArtistCorrect = !wantsArtist || isCloseEnough(userArtist, correctArtist);
-
-
-    setTitleCorrect(wantsTitle && isTitleCorrect);
-    setArtistCorrect(wantsArtist && isArtistCorrect);
-
-
     const allCorrect = isTitleCorrect && isArtistCorrect;
-    setInputErrorTitle(!isTitleCorrect);
-    setInputErrorArtist(!isArtistCorrect);
+
+    setValidationState({
+      titleCorrect: wantsTitle && isTitleCorrect,
+      artistCorrect: wantsArtist && isArtistCorrect,
+      inputErrorTitle: wantsTitle && !isTitleCorrect,
+      inputErrorArtist: wantsArtist && !isArtistCorrect,
+    });
+
 
     if (allCorrect) {
       setRevealAnswer(true);
@@ -191,10 +191,12 @@ export default function Blindtest() {
 
   // 🎵 Passer au morceau suivant (prévoir de l'aléatoire)
   const handleNext = () => {
-    setTitleCorrect(false);
-    setArtistCorrect(false);
-    setInputErrorTitle(false);
-    setInputErrorArtist(false);
+    setValidationState({
+      titleCorrect: false,
+      artistCorrect: false,
+      inputErrorTitle: false,
+      inputErrorArtist: false,
+    });
 
     setTitleGuess('');
     setArtistGuess('');
@@ -287,11 +289,11 @@ export default function Blindtest() {
               onChange={(e) => setTitleGuess(e.target.value)}
               disabled={revealAnswer}
             />
-            {titleCorrect && (
+            {validationState.titleCorrect && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
             )}
 
-            {inputErrorTitle && (
+            {validationState.inputErrorTitle && (
               <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
             )}
           </div>
@@ -313,11 +315,11 @@ export default function Blindtest() {
               onChange={(e) => setArtistGuess(e.target.value)}
               disabled={revealAnswer}
             />
-            {artistCorrect && (
+            {validationState.artistCorrect && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
             )}
 
-            {inputErrorArtist && (
+            {validationState.inputErrorArtist && (
               <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
             )}
           </div>
