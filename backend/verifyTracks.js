@@ -10,22 +10,43 @@ dotenv.config();
 const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
-// ⚙️ Fonction de test d’un videoId
+// 🔍 Vérifie si une vidéo YouTube est publique et intégrable
 async function isVideoAvailable(videoId) {
-  const res = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=status&id=${videoId}&key=${YOUTUBE_API_KEY}`);
+
+  // 1. Vérifie statut via l’API YouTube
+  const res = await fetch(
+    `https://www.googleapis.com/youtube/v3/videos?part=status&id=${videoId}&key=${YOUTUBE_API_KEY}`
+  );
   const data = await res.json();
 
   if (!data.items || data.items.length === 0) {
     return false; // vidéo supprimée ou inexistante
   }
 
+// Vérifie si la vidéo est embed (disponible pour intégration) et publique
   const status = data.items[0].status;
-  return status.embeddable && status.privacyStatus === 'public';
+  const embeddable = status.embeddable && status.privacyStatus === 'public';
+
+  if (!embeddable) return false;
+
+  // Test réel de l'embed avec oEmbed pour s'assurer que la vidéo est intégrable sur n'importe quel site
+  // Cela permet de vérifier si la vidéo est bloquée dans certains pays ou si elle a des restrictions
+  // Note : oEmbed est une API standard pour récupérer des informations sur les contenus intégrables
+  try {
+    const oembedRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}`);
+
+    return oembedRes.ok;
+  } catch (err) {
+    console.warn(`⚠️ Erreur oEmbed : ${err.message}`);
+    return false;
+  }
 }
 
-// 🔁 Vérification de tous les morceaux
-async function verifyAllTracks() {
-  const { data: tracks, error } = await supabase.from('tracks').select('id, title, videoId, verified');
+// 🔁 Parcourt des morceaux et supprime ceux qui sont invalides
+async function cleanBrokenTracks() {
+  const { data: tracks, error } = await supabase
+    .from('tracks')
+    .select('id, title, videoId');
 
   if (error) {
     console.error('❌ Erreur Supabase :', error.message);
@@ -33,32 +54,26 @@ async function verifyAllTracks() {
   }
 
   let checked = 0;
-  let broken = 0;
+  let deleted = 0;
 
   for (const track of tracks) {
     const valid = await isVideoAvailable(track.videoId);
 
-    if (!valid && track.verified !== false) {
-      broken++;
-      console.log(`❌ Vidéo cassée : "${track.title}" (${track.videoId})`);
+    if (!valid) {
+      deleted++;
+      console.log(`🗑️ Suppression de "${track.title}" (${track.videoId})`);
 
-      // Optionnel : met à jour Supabase
-      await supabase
-        .from('tracks')
-        .update({ verified: false })
-        .eq('id', track.id);
-    } else if (valid && track.verified !== true) {
-      console.log(`✅ Vidéo OK : ${track.title}`);
-      await supabase
-        .from('tracks')
-        .update({ verified: true })
-        .eq('id', track.id);
+      // Suppression dans Supabase
+      await supabase.from('tracks').delete().eq('id', track.id);
+    } else {
+      console.log(`✅ OK : ${track.title}`);
     }
 
     checked++;
   }
 
-  console.log(`\n✅ Vérification terminée : ${checked} morceaux scannés, ${broken} vidéos cassées.`);
+  console.log(`\n🔍 ${checked} morceaux vérifiés`);
+  console.log(`🧹 ${deleted} morceaux supprimés (vidéos non valides)`);
 }
 
-verifyAllTracks();
+cleanBrokenTracks();

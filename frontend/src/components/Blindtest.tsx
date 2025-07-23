@@ -75,11 +75,11 @@ export default function Blindtest() {
   // 📝 États pour gérer les différentes fonctions du jeu.
   // Ils sont regroupés pour simplifier la gestion de l'état du jeu
 
-  // ⚙️ Deviner le titre, l'artiste ou les deux
-  const [answerParts, setAnswerParts] = useState<string[]>(['title']);
-
   // 🧠 États du jeu centralisés via useReducer. GameState se trouve dans GameReducer.ts
   const [gameState, dispatch] = useReducer(gameReducer, initialGameState);
+
+  // ⚙️ Deviner le titre, l'artiste ou les deux
+  const [answerParts, setAnswerParts] = useState<string[]>(['title']);
 
   // 📝 Queue de l'index
   const [shuffledQueue, setShuffledQueue] = useState<number[]>([]);
@@ -119,12 +119,23 @@ export default function Blindtest() {
 
   // 🔎 Les morceaux sont filtrés selon les catégories sélectionnées par les joueurs
   const filteredTracks = useMemo(() => {
-    return trackList.filter(
-      (track) =>
+    return trackList.filter((track) => {
+
+      // Si aucune catégorie n'est sélectionnée, on affiche tous les morceaux
+      const inSelectedCategories =
         selectedCategories.length === 0 ||
-        selectedCategories.includes(track.category)
-    );
-  }, [trackList, selectedCategories]);
+        selectedCategories.includes(track.category);
+
+      const wantsOnlyArtist =
+        answerParts.includes('artist') && !answerParts.includes('title');
+
+      // Si les joueurs veulent deviner uniquement l'artiste, on exclue les morceaux sans artiste
+      const hasArtist = track.artist.trim() !== '';
+
+      return inSelectedCategories && (!wantsOnlyArtist || hasArtist);
+    });
+
+  }, [trackList, selectedCategories, answerParts]);
 
 
   // 🃏 On mélange les morceaux filtrés pour qu'ils se lancent de manière aléatoire
