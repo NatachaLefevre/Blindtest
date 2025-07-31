@@ -10,9 +10,19 @@ import CategorySelector from './CategorySelector';
 type Track = {
   title: string;
   artist: string;
+  artist_type?: string; // Type d'artiste (interprète ou compositeur)
   videoId: string;
   start: number;
   category: string;
+};
+
+// Pour préciser le type de musiques dans le champ "Titre"
+const categoriesWithTypeTitle = {
+  'films': 'Film',
+  'films d\'animation': 'Film d’animation',
+  'séries': 'Série',
+  'jeux vidéo': 'Jeu vidéo',
+  'séries animées': 'Série animée'
 };
 
 
@@ -160,6 +170,15 @@ export default function Blindtest() {
 
   // 🎯 Le morceau en cours depuis la liste filtrée
   const currentTrack = filteredTracks[gameState.currentTrackIndex];
+  
+  // Type de contenu à afficher dans le champ titre (film, série, etc.)
+  // Préciser à TypeScript que currentTrack.category est une clé de categoriesWithTypeTitle
+  // On s'assure que currentTrack est défini avant d'accéder à categoriesWithTypeTitle
+  const typeTitle = currentTrack
+  ? categoriesWithTypeTitle[currentTrack.category as keyof typeof categoriesWithTypeTitle] || ''
+  : '';
+
+
 
   // ⏱ Timer déclenché uniquement si un extrait est en cours
   useEffect(() => {
@@ -322,7 +341,12 @@ export default function Blindtest() {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="Quoi que c'est ? (Titre)"
+              placeholder={
+                typeTitle
+                  ? `${typeTitle}`
+                  : 'Titre'
+              }
+
               className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
               value={titleGuess}
               onChange={(e) =>
@@ -349,8 +373,11 @@ export default function Blindtest() {
               placeholder={
                 // Si l'artiste est vide dans la BDD, on affiche un message différent
                 currentTrack.artist.trim() === ''
-                  ? 'Artiste non connu.e (ne rien écrire)'
-                  : "Qui qui c'est ? (Artiste)"
+                  ? '/'
+                  // Changer le placeholder selon le type d'artiste (interprète ou compositeur)
+                  : currentTrack.artist_type === 'compositeur'
+                    ? 'Compositeur'
+                    : "Interprète"
               }
               className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
               value={artistGuess}
@@ -371,14 +398,14 @@ export default function Blindtest() {
         )}
 
         {/* ✅ Bouton pour valider la réponse */}
-        <button
-          type="submit" // 🆗 Ou on peut ne rien mettre : par défaut c’est "submit"
-          disabled={gameState.revealAnswer || !gameState.isPlaying}
-          className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
-        >
-          Valider la réponse
-        </button>
-
+        {gameState.isPlaying && !gameState.revealAnswer && (
+          <button
+            type="submit" // 🆗 Ou on peut ne rien mettre : par défaut c’est "submit"
+            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
+          >
+            Valider la réponse
+          </button>
+        )}
       </form>
 
 
