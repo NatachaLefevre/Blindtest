@@ -8,7 +8,7 @@ Le backend est assuré par un système de database et d'API (Supabase + API Yout
 À terme, l'UI design se rapprochera de ma DA de streaming : https://www.twitch.tv/axabagaming
 
 Le blindtest est jouable en test à cette adresse : 
-## https://blindtest-axaba.netlify.app/
+## <p align="center">https://blindtest-axaba.netlify.app/</p>
 
 ![Capture03](https://github.com/user-attachments/assets/1073c2a6-5cb9-4ade-b7c9-c50bad0a3fe7)
 
