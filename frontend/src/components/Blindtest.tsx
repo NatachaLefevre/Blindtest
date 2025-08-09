@@ -170,13 +170,13 @@ export default function Blindtest() {
 
   // 🎯 Le morceau en cours depuis la liste filtrée
   const currentTrack = filteredTracks[gameState.currentTrackIndex];
-  
+
   // Type de contenu à afficher dans le champ titre (film, série, etc.)
   // Préciser à TypeScript que currentTrack.category est une clé de categoriesWithTypeTitle
   // On s'assure que currentTrack est défini avant d'accéder à categoriesWithTypeTitle
   const typeTitle = currentTrack
-  ? categoriesWithTypeTitle[currentTrack.category as keyof typeof categoriesWithTypeTitle] || ''
-  : '';
+    ? categoriesWithTypeTitle[currentTrack.category as keyof typeof categoriesWithTypeTitle] || ''
+    : '';
 
 
 
@@ -397,6 +397,7 @@ export default function Blindtest() {
           </div>
         )}
 
+<div className="flex flex-col items-center space-y-4">
         {/* ✅ Bouton pour valider la réponse */}
         {gameState.isPlaying && !gameState.revealAnswer && (
           <button
@@ -406,6 +407,19 @@ export default function Blindtest() {
             Valider la réponse
           </button>
         )}
+
+        {/* ✅ Bouton pour passer à la réponse, si les joueurs ne savent pas */}
+        {gameState.isPlaying && !gameState.revealAnswer && (
+          <button
+            type="button" // Pour éviter le rechargement de la page
+            onClick={() => dispatch({ type: 'REVEAL_ANSWER' })}
+            className="cursor-pointer bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-10 rounded shadow transition"
+          >
+            Passer
+          </button>
+        )}
+        </div>
+
       </form>
 
 
