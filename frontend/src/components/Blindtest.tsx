@@ -36,7 +36,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // Liste de mots à ignorer dans la comparaison
-const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'des', 'and', 'et']
+// const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'des', 'and', 'et']
 
 // 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
 function normalize(str: string): string {
@@ -46,7 +46,7 @@ function normalize(str: string): string {
     .replace(/[\u0300-\u036f]/g, '') // supprime les accents
     .replace(/[^\w\s]|_/g, '') // enlève la ponctuation
     .split(/\s+/) // découpe en mots
-    .filter(word => word && !stopWords.includes(word)) // enlève les mots inutiles
+    // .filter(word => word && !stopWords.includes(word)) // enlève les mots inutiles
     .join('')
     .trim();
 }
