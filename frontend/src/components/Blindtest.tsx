@@ -64,7 +64,7 @@ function isCloseEnough(a: string, b: string): boolean {
   // 🎯 Cas où la distance de Levenshtein s'applique
   const distance = levenshtein(normA, normB);
   const maxLen = Math.max(normA.length, normB.length);
-  return distance / maxLen < 0.25; // 25% de différence max
+  return distance / maxLen < 0.20; // 20% de différence max
 }
 
 // 🔠 Fonction de distance de Levenshtein
