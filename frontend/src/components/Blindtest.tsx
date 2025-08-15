@@ -45,10 +45,9 @@ function normalize(str: string): string {
     .normalize("NFD") // décompose les accents
     .replace(/[\u0300-\u036f]/g, '') // supprime les accents
     .replace(/[^\w\s]|_/g, '') // enlève la ponctuation
-    .replace(/\s+/g, ' ') // espace simple
-    .split(' ') // découpe en mots
+    .split(/\s+/) // découpe en mots
     .filter(word => word && !stopWords.includes(word)) // enlève les mots inutiles
-    .join(' ')
+    .join('')
     .trim();
 }
 
@@ -62,10 +61,10 @@ function isCloseEnough(a: string, b: string): boolean {
     return true;
   }
 
-  // 🎯 Cas où la distance de Levenshtein est inférieure à 20% de la longueur des réponses
+  // 🎯 Cas où la distance de Levenshtein s'applique
   const distance = levenshtein(normA, normB);
   const maxLen = Math.max(normA.length, normB.length);
-  return distance / maxLen < 0.20; // 20% de différence max
+  return distance / maxLen < 0.25; // 25% de différence max
 }
 
 // 🔠 Fonction de distance de Levenshtein
