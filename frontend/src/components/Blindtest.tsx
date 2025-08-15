@@ -45,9 +45,9 @@ function normalize(str: string): string {
     .normalize("NFD") // décompose les accents
     .replace(/[\u0300-\u036f]/g, '') // supprime les accents
     .replace(/[^\w\s]|_/g, '') // enlève la ponctuation
-    .split(/\s+/) // découpe en mots
+    // .split(/\s+/) // découpe en mots
     // .filter(word => word && !stopWords.includes(word)) // enlève les mots inutiles
-    .join('')
+    // .join('')
     .trim();
 }
 
