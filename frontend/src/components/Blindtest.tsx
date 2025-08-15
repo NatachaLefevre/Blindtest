@@ -25,7 +25,6 @@ const categoriesWithTypeTitle = {
   'séries animées': 'Série animée'
 };
 
-
 // 🔀 Fonction pour mélanger un tableau
 function shuffleArray<T>(array: T[]): T[] {
   const arr = [...array];
@@ -36,6 +35,9 @@ function shuffleArray<T>(array: T[]): T[] {
   return arr;
 }
 
+// Liste de mots à ignorer dans la comparaison
+const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'des', 'and', 'et']
+
 // 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
 function normalize(str: string): string {
   return str
@@ -44,6 +46,9 @@ function normalize(str: string): string {
     .replace(/[\u0300-\u036f]/g, '') // supprime les accents
     .replace(/[^\w\s]|_/g, '') // enlève la ponctuation
     .replace(/\s+/g, ' ') // espace simple
+    .split(' ') // découpe en mots
+    .filter(word => word && !stopWords.includes(word)) // enlève les mots inutiles
+    .join(' ')
     .trim();
 }
 
@@ -51,6 +56,13 @@ function normalize(str: string): string {
 function isCloseEnough(a: string, b: string): boolean {
   const normA = normalize(a);
   const normB = normalize(b);
+
+  // 🎯 Cas où la réponse contient la bonne réponse complète
+  if (normA.includes(normB) || normB.includes(normA)) {
+    return true;
+  }
+
+  // 🎯 Cas où la distance de Levenshtein est inférieure à 20% de la longueur des réponses
   const distance = levenshtein(normA, normB);
   const maxLen = Math.max(normA.length, normB.length);
   return distance / maxLen < 0.20; // 20% de différence max
@@ -248,19 +260,27 @@ export default function Blindtest() {
       inputErrorArtist: false,
     });
 
+    let nextIndex: number;
+    let newQueue: number[];
+
     if (shuffledQueue.length === 0) {
       // Rebooter la queue quand on a joué tous les morceaux
       const indices = filteredTracks.map((_, index) => index);
       const reshuffled = shuffleArray(indices);
-      dispatch({ type: 'SET_INDEX', index: reshuffled[0] });
-      setShuffledQueue(reshuffled.slice(1));
+      nextIndex = reshuffled[0];
+      newQueue = reshuffled.slice(1);
     }
 
     else {
-      const [nextIndex, ...rest] = shuffledQueue;
-      dispatch({ type: 'SET_INDEX', index: nextIndex });
-      setShuffledQueue(rest);
+      [nextIndex, ...newQueue] = shuffledQueue;
     }
+
+    // 🔹 Met à jour l'index et la file
+    dispatch({ type: 'SET_INDEX', index: nextIndex });
+    setShuffledQueue(newQueue);
+
+    // 🔹 Relance directement le morceau suivant
+    dispatch({ type: 'START_GAME' });
 
   };
 
@@ -397,27 +417,27 @@ export default function Blindtest() {
           </div>
         )}
 
-<div className="flex flex-col items-center space-y-4">
-        {/* ✅ Bouton pour valider la réponse */}
-        {gameState.isPlaying && !gameState.revealAnswer && (
-          <button
-            type="submit" // 🆗 Ou on peut ne rien mettre : par défaut c’est "submit"
-            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
-          >
-            Valider la réponse
-          </button>
-        )}
+        <div className="flex flex-col items-center space-y-4">
+          {/* ✅ Bouton pour valider la réponse */}
+          {gameState.isPlaying && !gameState.revealAnswer && (
+            <button
+              type="submit" // 🆗 Ou on peut ne rien mettre : par défaut c’est "submit"
+              className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
+            >
+              Valider la réponse
+            </button>
+          )}
 
-        {/* ✅ Bouton pour passer à la réponse, si les joueurs ne savent pas */}
-        {gameState.isPlaying && !gameState.revealAnswer && (
-          <button
-            type="button" // Pour éviter le rechargement de la page
-            onClick={() => dispatch({ type: 'REVEAL_ANSWER' })}
-            className="cursor-pointer bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-10 rounded shadow transition"
-          >
-            Passer
-          </button>
-        )}
+          {/* ✅ Bouton pour passer à la réponse, si les joueurs ne savent pas */}
+          {gameState.isPlaying && !gameState.revealAnswer && (
+            <button
+              type="button" // Pour éviter le rechargement de la page
+              onClick={() => dispatch({ type: 'REVEAL_ANSWER' })}
+              className="cursor-pointer bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-10 rounded shadow transition"
+            >
+              Passer
+            </button>
+          )}
         </div>
 
       </form>
