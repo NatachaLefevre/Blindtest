@@ -36,7 +36,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // Liste de mots à ignorer dans la comparaison
-const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'd\'', 'des', 'and', 'et']
+const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'd\'', 'des', 'and', 'of', '&', 'et']
 
 // 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
 function normalize(str: string): string {
@@ -135,7 +135,14 @@ export default function Blindtest() {
       }
     })
       .then((res) => res.json())
-      .then((data) => setTrackList(data))
+      .then((data: Track[]) => {
+        setTrackList(data);
+      
+            // 🔹 On sélectionne toutes les catégories uniques par défaut
+      const allCategories = Array.from(new Set(data.map(track => track.category)));
+      setSelectedCategories(allCategories);
+  })
+      
       .catch((error) => console.error('Erreur chargement Supabase :', error));
   }, []);
 
@@ -214,7 +221,7 @@ export default function Blindtest() {
   // Il faut retirer le message quand un champ est sélectionné.
   const handlePlay = () => {
     if (answerParts.length === 0) {
-      setErrorMessage('❌ Il faut sélectionner au moins "Titre" ou "Artiste" pour commencer, mon petit lapin.');
+      setErrorMessage('❌ Il faut sélectionner au moins "Titre" ou "Artiste", mon petit lapin.');
       return;
     }
     setErrorMessage('');
@@ -331,9 +338,9 @@ export default function Blindtest() {
         <>
           <button
             onClick={handlePlay}
-            className="cursor-pointer bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded transition"
+            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded transition"
           >
-            ▶ Lancer l'extrait
+            ▶ Démarrer le blindtest
           </button>
 
           {/* ❌ Message d'erreur si aucun champ n'est sélectionné */}

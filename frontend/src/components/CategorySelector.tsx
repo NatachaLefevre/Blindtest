@@ -37,8 +37,8 @@ export default function CategorySelector({ selectedCategories, onChange }: Props
         key={cat}
         onClick={() => toggleCategory(cat)}
         className={`cursor-pointer text-sm px-4 py-2 rounded border transition duration-200 ${isSelected
-            ? 'bg-orange-500 text-white border-orange-600'
-            : 'bg-white hover:bg-orange-100 text-orange-600 border-orange-400'
+            ? 'bg-orange-500 text-white border-orange-500'
+            : 'bg-white text-gray-600 border-gray-400'
           } hover:shadow`}
       >
         {cat}
