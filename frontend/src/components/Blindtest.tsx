@@ -36,7 +36,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // Liste de mots à ignorer dans la comparaison
-const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'des', 'and', 'et']
+const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'd\'', 'des', 'and', 'et']
 
 // 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
 function normalize(str: string): string {
