@@ -36,18 +36,18 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // Liste de mots à ignorer dans la comparaison
-// const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'des', 'and', 'et']
+const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'des', 'and', 'et']
 
 // 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
 function normalize(str: string): string {
   return str
     .toLowerCase()
-    .normalize("NFD") // décompose les accents
-    .replace(/[\u0300-\u036f]/g, '') // supprime les accents
-    .replace(/[^\w\s]|_/g, '') // enlève la ponctuation
-    // .split(/\s+/) // découpe en mots
-    // .filter(word => word && !stopWords.includes(word)) // enlève les mots inutiles
-    // .join('')
+    .normalize("NFD")                   // décompose les accents
+    .replace(/[\u0300-\u036f]/g, '')    // supprime les accents
+    .replace(/[^\w\s]|_/g, '')          // supprime ponctuation
+    .split(/\s+/)                       // coupe en mots
+    .filter(word => word && !stopWords.includes(word)) // enlève stopwords
+    .join('')                           // <-- colle tout, plus d'espaces
     .trim();
 }
 
@@ -55,6 +55,8 @@ function normalize(str: string): string {
 function isCloseEnough(a: string, b: string): boolean {
   const normA = normalize(a);
   const normB = normalize(b);
+
+    if (!normA || !normB) return false;
 
   // 🎯 Cas où la réponse contient la bonne réponse complète
   if (normA.includes(normB) || normB.includes(normA)) {
