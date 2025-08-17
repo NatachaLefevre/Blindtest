@@ -180,6 +180,16 @@ export default function Blindtest() {
 
   }, [filteredTracks]);
 
+  // Réinitialiser la validation quand on change de mode
+useEffect(() => {
+  setValidationState({
+    titleCorrect: false,
+    artistCorrect: false,
+    inputErrorTitle: false,
+    inputErrorArtist: false,
+  });
+}, [answerMode]);
+
 
   // 📝 Les guesses du joueur pour le titre et l'artiste
   const { titleGuess, artistGuess } = gameState;
@@ -296,7 +306,9 @@ export default function Blindtest() {
       <div className="flex gap-4 items-center">
         <span className="text-sm font-semibold">Mode :</span>
         <button
-          onClick={() => setAnswerMode('title')}
+          onClick={() => {
+            setAnswerMode('title')}
+          }
           className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerMode === 'title'
             ? 'bg-purple-500 text-white border-purple-500'
             : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
@@ -306,7 +318,9 @@ export default function Blindtest() {
         </button>
 
         <button
-          onClick={() => setAnswerMode('title+artist')}
+          onClick={() => setAnswerMode('title+artist')
+            
+          }
           className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerMode === 'title+artist'
             ? 'bg-purple-500 text-white border-purple-500'
             : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'

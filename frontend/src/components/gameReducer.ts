@@ -115,5 +115,5 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     default:
       return state;
-  }
+  };
 }
