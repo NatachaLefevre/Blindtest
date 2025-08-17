@@ -36,19 +36,19 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // Liste de mots à ignorer dans la comparaison
-const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'd\'', 'des', 'and', 'of', '&', 'et']
+const stopWords = ['de', 'à', 'the', 'les', 'le', 'la', 'du', 'd\'', 'des', 'and', 'of', '&', 'ft', 'feat', 'et']
 
 // 🔣 Fonction de nettoyage des textes (supprime les accents, ponctuations, etc.)
 function normalize(str: string): string {
   return str
     .toLowerCase()
-    .normalize("NFD")                   // décompose les accents
-    .replace(/[\u0300-\u036f]/g, '')    // supprime les accents
-    .replace(/[^\w\s]|_/g, '')          // supprime ponctuation
-    .split(/\s+/)                       // coupe en mots
-    .filter(word => word && !stopWords.includes(word)) // enlève stopwords
-    .join('')                           // <-- colle tout, plus d'espaces
-    .trim();
+    .normalize("NFD")                                    // décompose les accents
+    .replace(/[\u0300-\u036f]/g, '')                     // supprime les accents
+    .replace(/[^\w\s]|_/g, '')                           // supprime ponctuation
+    .split(/\s+/)                                        // coupe en mots
+    .filter(word => word && !stopWords.includes(word))   // enlève stopwords
+    .join('')                                            // <-- colle tout, plus d'espaces
+    .trim();                                             // enlève les espaces en trop                   
 }
 
 // 🔍 Fonction pour comparer la réponse du joueur et la réponse de la base de données
@@ -56,7 +56,7 @@ function isCloseEnough(a: string, b: string): boolean {
   const normA = normalize(a);
   const normB = normalize(b);
 
-    if (!normA || !normB) return false;
+  if (!normA || !normB) return false;
 
   // 🎯 Cas où la réponse contient la bonne réponse complète
   if (normA.includes(normB) || normB.includes(normA)) {
@@ -101,8 +101,8 @@ export default function Blindtest() {
   // 🧠 États du jeu centralisés via useReducer. GameState se trouve dans GameReducer.ts
   const [gameState, dispatch] = useReducer(gameReducer, initialGameState);
 
-  // ⚙️ Deviner le titre, l'artiste ou les deux
-  const [answerParts, setAnswerParts] = useState<string[]>(['title']);
+  // ⚙️ Deviner Titre, ou Titre + Artiste
+  const [answerMode, setAnswerMode] = useState<'title' | 'title+artist'>('title');
 
   // 📝 Queue de l'index
   const [shuffledQueue, setShuffledQueue] = useState<number[]>([]);
@@ -112,9 +112,6 @@ export default function Blindtest() {
 
   // 📦 Liste complète des morceaux récupérés depuis le backend
   const [trackList, setTrackList] = useState<Track[]>([]);
-
-  // 🆕 Message d'erreur affiché si aucun champ "Titre" ou "Artiste" n'est sélectionné
-  const [errorMessage, setErrorMessage] = useState('');
 
   // ✅ États (regroupés) pour valider ou invalider les réponses Titre et Artiste
   const [validationState, setValidationState] = useState({
@@ -137,12 +134,12 @@ export default function Blindtest() {
       .then((res) => res.json())
       .then((data: Track[]) => {
         setTrackList(data);
-      
-            // 🔹 On sélectionne toutes les catégories uniques par défaut
-      const allCategories = Array.from(new Set(data.map(track => track.category)));
-      setSelectedCategories(allCategories);
-  })
-      
+
+        // 🔹 On sélectionne toutes les catégories uniques par défaut
+        const allCategories = Array.from(new Set(data.map(track => track.category)));
+        setSelectedCategories(allCategories);
+      })
+
       .catch((error) => console.error('Erreur chargement Supabase :', error));
   }, []);
 
@@ -156,16 +153,15 @@ export default function Blindtest() {
         selectedCategories.length === 0 ||
         selectedCategories.includes(track.category);
 
-      const wantsOnlyArtist =
-        answerParts.includes('artist') && !answerParts.includes('title');
+      // Mode "Titre + Artiste" → exclure les morceaux sans artiste
+      if (answerMode === 'title+artist' && track.artist.trim() === '') {
+        return false;
+      }
 
-      // Si les joueurs veulent deviner uniquement l'artiste, on exclue les morceaux sans artiste
-      const hasArtist = track.artist.trim() !== '';
-
-      return inSelectedCategories && (!wantsOnlyArtist || hasArtist);
+      return inSelectedCategories;
     });
 
-  }, [trackList, selectedCategories, answerParts]);
+  }, [trackList, selectedCategories, answerMode]);
 
 
   // 🃏 On mélange les morceaux filtrés pour qu'ils se lancent de manière aléatoire
@@ -217,14 +213,8 @@ export default function Blindtest() {
 
 
 
-  // ▶️ Pour lancer l'extrait (prévoir aléatoire). Message d'erreur si aucun champ n'est sélectionné.
-  // Il faut retirer le message quand un champ est sélectionné.
+  // ▶️ Pour lancer l'extrait.
   const handlePlay = () => {
-    if (answerParts.length === 0) {
-      setErrorMessage('❌ Il faut sélectionner au moins "Titre" ou "Artiste", mon petit lapin.');
-      return;
-    }
-    setErrorMessage('');
     dispatch({ type: 'START_GAME' });
   };
 
@@ -236,10 +226,11 @@ export default function Blindtest() {
     const correctTitle = currentTrack.title.trim();
     const correctArtist = currentTrack.artist.trim();
 
-    const wantsTitle = answerParts.includes('title');
-    const wantsArtist = answerParts.includes('artist') && currentTrack.artist.trim() !== '';
-    // Si l’artiste est vide dans la BDD, on ne cherche pas à valider la réponse
+    // On vérifie si au moins un champ est rempli
+    const wantsTitle = true;
+    const wantsArtist = answerMode === 'title+artist' && currentTrack.artist.trim() !== '';
 
+    // On vérifie si les réponses du joueur sont correctes
     const isTitleCorrect = !wantsTitle || isCloseEnough(userTitle, correctTitle);
     const isArtistCorrect = !wantsArtist || isCloseEnough(userArtist, correctArtist);
     const allCorrect = isTitleCorrect && isArtistCorrect;
@@ -301,28 +292,30 @@ export default function Blindtest() {
   return (
     <div className="flex flex-col items-center p-8 space-y-6 bg-white rounded-lg shadow w-full max-w-xl mx-auto mt-8">
 
-      {/* Choisir de deviner Titre, Artiste ou les deux */}
+      {/* Mode Titre, ou Titre + Artiste */}
       <div className="flex gap-4 items-center">
-        <span className="text-sm font-semibold">Deviner :</span>
-        {['title', 'artist'].map((part) => (
-          <button
-            key={part}
-            onClick={() => {
-              if (answerParts.includes(part)) {
-                setAnswerParts(answerParts.filter((p) => p !== part));
-              } else {
-                setAnswerParts([...answerParts, part]);
-              }
-            }}
-            className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerParts.includes(part)
-              ? 'bg-purple-500 text-white border-purple-500'
-              : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
-              }`}
-          >
-            {part === 'title' ? 'Titre' : 'Artiste'}
-          </button>
-        ))}
+        <span className="text-sm font-semibold">Mode :</span>
+        <button
+          onClick={() => setAnswerMode('title')}
+          className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerMode === 'title'
+            ? 'bg-purple-500 text-white border-purple-500'
+            : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
+            }`}
+        >
+          Titre
+        </button>
+
+        <button
+          onClick={() => setAnswerMode('title+artist')}
+          className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerMode === 'title+artist'
+            ? 'bg-purple-500 text-white border-purple-500'
+            : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
+            }`}
+        >
+          Titre + Artiste
+        </button>
       </div>
+
 
       {/* ✅ Sélection des catégories */}
       <div className="text-center mb-4">
@@ -338,22 +331,17 @@ export default function Blindtest() {
         <>
           <button
             onClick={handlePlay}
-            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded transition"
+            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white text-xl font-bold py-2 px-10 rounded transition"
           >
-            ▶ Démarrer le blindtest
+            ▶ Démarrer
           </button>
-
-          {/* ❌ Message d'erreur si aucun champ n'est sélectionné */}
-          {errorMessage && (
-            <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
-          )}
         </>
       )}
 
       {/* ⏱ Affichage du timer */}
       {!gameState.revealAnswer && gameState.isPlaying && (
-        <p className="text-sm text-gray-600">
-          ⏳ Temps restant : {gameState.timer}s
+        <p className="text-m text-gray-600">
+          ⏳ {gameState.timer}s
         </p>
       )}
 
@@ -364,56 +352,51 @@ export default function Blindtest() {
       }}
         className="w-full text-center space-y-4">
 
-        {/* 📝 Champ pour le titre. Ne s'affiche que quand "Titre" est affiché */}
-        {answerParts.includes('title') && (
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder={
-                typeTitle
-                  ? `${typeTitle}`
-                  : 'Titre'
-              }
+        {/* 📝 Champ pour le Titre. S'affiche toujours */}
+        {(gameState.isPlaying || gameState.revealAnswer) && (
+        <div className="relative w-full">
+          <input
+            type="text"
+            placeholder={typeTitle || 'Titre'}
 
-              className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
-              value={titleGuess}
-              onChange={(e) =>
-                dispatch({ type: 'SET_GUESS', payload: { title: e.target.value } })
-              }
+            className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
+            value={titleGuess}
+            onChange={(e) =>
+              dispatch({ type: 'SET_GUESS', payload: { title: e.target.value } })
+            }
 
-              disabled={gameState.revealAnswer}
-            />
-            {validationState.titleCorrect && (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
-            )}
+            readOnly={gameState.revealAnswer}
+          />
+          {validationState.titleCorrect && (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
+          )}
 
-            {validationState.inputErrorTitle && (
-              <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
-            )}
-          </div>
+          {validationState.inputErrorTitle && (
+            <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
+          )}
+        </div>
         )}
 
-        {/* 📝 Champ pour l’artiste. Ne s'affiche que quand "Artiste" est affiché */}
-        {answerParts.includes('artist') && (
+
+        {/* 📝 Champ pour l'Artiste. Ne s'affiche que quand "Titre + Artiste" est affiché */}
+        {(gameState.isPlaying || gameState.revealAnswer) && answerMode === 'title+artist' && (
           <div className="relative w-full">
             <input
               type="text"
               placeholder={
-                // Si l'artiste est vide dans la BDD, on affiche un message différent
-                currentTrack.artist.trim() === ''
-                  ? '/'
-                  // Changer le placeholder selon le type d'artiste (interprète ou compositeur)
-                  : currentTrack.artist_type === 'compositeur'
-                    ? 'Compositeur'
-                    : "Interprète"
+                // On affiche "Compositeur" si l'artiste est un compositeur, sinon "Interprète"
+                currentTrack.artist_type === 'compositeur'
+                  ? 'Compositeur'
+                  : 'Interprète'
               }
+
               className="border border-purple-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-purple-300"
               value={artistGuess}
               onChange={(e) =>
                 dispatch({ type: 'SET_GUESS', payload: { artist: e.target.value } })
               }
 
-              disabled={gameState.revealAnswer}
+              readOnly={gameState.revealAnswer}
             />
             {validationState.artistCorrect && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>

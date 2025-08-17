@@ -44,12 +44,20 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
   // et on retourne le nouvel état du jeu en fonction de l'action reçue
   switch (action.type) {
     case 'START_GAME':
-      return { ...state, isPlaying: true, showPlayer: true };
+      return { ...state, 
+        isPlaying: true, 
+        showPlayer: true 
+      };
 
     // On révèle la réponse et on affiche le lecteur vidéo
     // On arrête la musique en cours
     case 'REVEAL_ANSWER':
-      return { ...state, revealAnswer: true, showPlayer: true, isPlaying: false };
+      return { 
+        ...state, 
+        revealAnswer: true, 
+        showPlayer: true, 
+        isPlaying: false 
+      };
 
     // On décrémente le timer à chaque tick
     // Si le timer atteint 0, on ne fait rien (le jeu gère la fin de partie)
