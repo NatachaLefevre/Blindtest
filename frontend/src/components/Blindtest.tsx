@@ -2,6 +2,7 @@ import { useReducer, useState, useEffect, useMemo } from 'react';
 import { gameReducer, initialGameState } from './gameReducer';
 import YoutubePlayer from './YoutubePlayer';
 import CategorySelector from './CategorySelector';
+import '../styles/Blindtest.css'
 
 // 📝 Queue de l'index
 // (déplacé dans le composant Blindtest)
@@ -304,12 +305,12 @@ useEffect(() => {
 
       {/* Mode Titre, ou Titre + Artiste */}
       <div className="flex gap-4 items-center">
-        <span className="text-sm font-semibold">Mode :</span>
+        <span className="text-lg font-semibold">Mode :</span>
         <button
           onClick={() => {
             setAnswerMode('title')}
           }
-          className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerMode === 'title'
+          className={`cursor-pointer text-lg px-4 py-2 rounded border ${answerMode === 'title'
             ? 'bg-purple-500 text-white border-purple-500'
             : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
             }`}
@@ -321,7 +322,7 @@ useEffect(() => {
           onClick={() => setAnswerMode('title+artist')
             
           }
-          className={`cursor-pointer text-sm px-4 py-1 rounded border ${answerMode === 'title+artist'
+          className={`cursor-pointer text-lg px-4 py-2 rounded border ${answerMode === 'title+artist'
             ? 'bg-purple-500 text-white border-purple-500'
             : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
             }`}
@@ -333,7 +334,7 @@ useEffect(() => {
 
       {/* ✅ Sélection des catégories */}
       <div className="text-center mb-4">
-        <span className="text-sm font-semibold">Catégories</span>
+        <span className="text-lg font-semibold">Catégories :</span>
         <CategorySelector
           selectedCategories={selectedCategories}
           onChange={setSelectedCategories}
@@ -345,7 +346,7 @@ useEffect(() => {
         <>
           <button
             onClick={handlePlay}
-            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white text-xl font-bold py-2 px-10 rounded transition"
+            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white text-3xl font-bold py-2 px-10 rounded transition"
           >
             ▶ Démarrer
           </button>
@@ -370,7 +371,7 @@ useEffect(() => {
         {(gameState.isPlaying || gameState.revealAnswer) && (
         <div className="relative w-full">
           <input
-            type="text"
+            type="text" autoFocus
             placeholder={typeTitle || 'Titre'}
 
             className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
