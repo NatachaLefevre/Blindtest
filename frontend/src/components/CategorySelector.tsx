@@ -5,8 +5,8 @@ type Props = {
 
 // Les différentes catégories disponibles pour le blindtest
 const categories = [
-  'chanson anglophone',
-  'chanson francophone',
+  'chansons internationales',
+  'chansons francophones',
   'jeux vidéo',
   'films',
   'films d\'animation',

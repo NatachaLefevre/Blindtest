@@ -301,7 +301,7 @@ useEffect(() => {
   }
 
   return (
-    <div className="flex flex-col items-center p-8 space-y-6 bg-white rounded-lg shadow w-full max-w-xl mx-auto mt-8">
+    <div className="flex flex-col items-center p-8 space-y-10 bg-white rounded-lg shadow w-full max-w-2xl mx-auto mt-8">
 
       {/* Mode Titre, ou Titre + Artiste */}
       <div className="flex gap-4 items-center">

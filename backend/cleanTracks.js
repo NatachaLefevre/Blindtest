@@ -33,6 +33,13 @@ function extractCleanTitle(youtubeTitle) {
     .trim();
 }
 
+// Petite utilitaire
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+const different = (a, b) =>
+  (a || '').trim().toLowerCase() !== (b || '').trim().toLowerCase();
+
 // 🔍 Récupération du vrai titre YouTube
 async function getYoutubeTitle(videoId) {
   const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${YOUTUBE_API_KEY}`;
@@ -64,13 +71,13 @@ async function cleanTracks() {
   for (const track of tracks) {
     let { title: originalTitle, artist: originalArtist } = track;
 
-    // 1. Récupérer le vrai titre YouTube
+    // 1) Récupérer le vrai titre YouTube (si possible)
     const youtubeTitle = await getYoutubeTitle(track.videoId);
     if (youtubeTitle) {
       originalTitle = extractCleanTitle(youtubeTitle);
     }
 
-    // 2. Si artist est vide, tenter une extraction depuis le titre
+    // 2) Si artist est vide, tenter une extraction depuis le titre
     if (!originalArtist && originalTitle.includes('-')) {
       const parts = originalTitle.split('-');
       if (parts.length >= 2) {
@@ -79,35 +86,51 @@ async function cleanTracks() {
       }
     }
 
-    // 3. Nettoyage
-    const cleanedTitle = cleanString(originalTitle);
+    // 3) Nettoyage basique
+    let cleanedTitle = cleanString(originalTitle);  // <-- let ici
     const cleanedArtist = cleanString(originalArtist);
 
-    // 4. Déduction du type d’artiste
+    // 3b) Supprimer l'artiste en préfixe du titre si déjà présent
+    if (cleanedArtist) {
+      const artistPrefixRe = new RegExp(
+        `^\\s*${escapeRegExp(cleanedArtist)}\\s*[-:–—·]?\\s*`,
+        'i'
+      );
+      cleanedTitle = cleanedTitle.replace(artistPrefixRe, '').trim();
+    }
+
+
+    // c'est ce cleanedTitle final qu'on va stocker
+    const finalTitle = cleanedTitle;
+
+
+    // 4) Déduction du type d’artiste
     let artistType = track.artist_type || 'interprète';
     const cat = track.category?.toLowerCase();
     if (['films', 'séries', 'films d’animation', 'films d animation', 'séries animées'].includes(cat)) {
       artistType = 'compositeur';
     }
 
-    // 5. Mise à jour uniquement si changement
-    if (
-      cleanedTitle !== track.title ||
-      cleanedArtist !== track.artist ||
-      artistType !== track.artist_type
-    ) {
+    // 5) Mise à jour uniquement si quelque chose change (attention: on compare AVEC finalTitle)
+    const shouldUpdate =
+      different(finalTitle, track.title) ||
+      different(cleanedArtist, track.artist) ||
+      different(artistType, track.artist_type);
+
+    if (shouldUpdate) {
       await supabase
         .from('tracks')
         .update({
-          title: cleanedTitle,
+          title: finalTitle,
           artist: cleanedArtist,
           artist_type: artistType,
         })
         .eq('id', track.id);
 
-      console.log(`✅ "${track.title}" → "${cleanedTitle}"`);
+      console.log(`✅ "${track.title}" → "${finalTitle}"`);
       updated++;
     }
+
   }
 
   console.log(`\n🎉 Nettoyage terminé : ${updated} morceaux mis à jour.`);
