@@ -1,4 +1,4 @@
-import { useReducer, useState, useEffect, useMemo } from 'react';
+import { useReducer, useState, useEffect, useMemo, useRef } from 'react';
 import { gameReducer, initialGameState } from './gameReducer';
 import YoutubePlayer from './YoutubePlayer';
 import CategorySelector from './CategorySelector';
@@ -57,14 +57,17 @@ function isCloseEnough(a: string, b: string): boolean {
   const normA = normalize(a);
   const normB = normalize(b);
 
+  // Si une des deux chaînes est vide après nettoyage, on considère que ce n'est pas correct
   if (!normA || !normB) return false;
 
-  // 🎯 Cas où la réponse contient la bonne réponse complète
-  if (normA.includes(normB) || normB.includes(normA)) {
-    return true;
-  }
+  // 1. On cherche une égalité stricte après nettoyage
+  if (normA === normB) return true;
 
-  // 🎯 Cas où la distance de Levenshtein s'applique
+  // 2. On vérifie si une réponse contient l’autre, mais seulement si la plus courte fait au moins 3 caractères
+  // 2. Trop court => impossible d'être correct
+  if (normA.length < 3) return false;
+  
+  // 3. On applique la distance de Levenshtein pour la tolérance aux fautes de frappe
   const distance = levenshtein(normA, normB);
   const maxLen = Math.max(normA.length, normB.length);
   return distance / maxLen < 0.20; // 20% de différence max
@@ -121,6 +124,15 @@ export default function Blindtest() {
     inputErrorTitle: false,
     inputErrorArtist: false,
   });
+
+  // ⚙️ Forcer l'autofocus sur le champ Titre à chaque lancement de morceau
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (titleInputRef.current && (gameState.isPlaying || gameState.revealAnswer)) {
+      titleInputRef.current.focus();
+    }
+  }, [gameState.currentTrackIndex, gameState.isPlaying, gameState.revealAnswer]);
 
 
   // 🔁 Appel API pour récupérer les morceaux depuis Supabase
@@ -182,14 +194,14 @@ export default function Blindtest() {
   }, [filteredTracks]);
 
   // Réinitialiser la validation quand on change de mode
-useEffect(() => {
-  setValidationState({
-    titleCorrect: false,
-    artistCorrect: false,
-    inputErrorTitle: false,
-    inputErrorArtist: false,
-  });
-}, [answerMode]);
+  useEffect(() => {
+    setValidationState({
+      titleCorrect: false,
+      artistCorrect: false,
+      inputErrorTitle: false,
+      inputErrorArtist: false,
+    });
+  }, [answerMode]);
 
 
   // 📝 Les guesses du joueur pour le titre et l'artiste
@@ -204,8 +216,6 @@ useEffect(() => {
   const typeTitle = currentTrack
     ? categoriesWithTypeTitle[currentTrack.category as keyof typeof categoriesWithTypeTitle] || ''
     : '';
-
-
 
   // ⏱ Timer déclenché uniquement si un extrait est en cours
   useEffect(() => {
@@ -301,14 +311,15 @@ useEffect(() => {
   }
 
   return (
-    <div className="flex flex-col items-center p-8 space-y-10 bg-white rounded-lg shadow w-full max-w-2xl mx-auto mt-8">
+    <div className="flex flex-col items-center p-8 space-y-10 bg-white rounded-lg shadow w-full max-w-2xl mx-auto mt-0">
 
       {/* Mode Titre, ou Titre + Artiste */}
       <div className="flex gap-4 items-center">
         <span className="text-lg font-semibold">Mode :</span>
         <button
           onClick={() => {
-            setAnswerMode('title')}
+            setAnswerMode('title')
+          }
           }
           className={`cursor-pointer text-lg px-4 py-2 rounded border ${answerMode === 'title'
             ? 'bg-purple-500 text-white border-purple-500'
@@ -320,7 +331,7 @@ useEffect(() => {
 
         <button
           onClick={() => setAnswerMode('title+artist')
-            
+
           }
           className={`cursor-pointer text-lg px-4 py-2 rounded border ${answerMode === 'title+artist'
             ? 'bg-purple-500 text-white border-purple-500'
@@ -346,7 +357,7 @@ useEffect(() => {
         <>
           <button
             onClick={handlePlay}
-            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white text-3xl font-bold py-2 px-10 rounded transition"
+            className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white text-3xl font-bold py-2 px-10 rounded transition mb-0"
           >
             ▶ Démarrer
           </button>
@@ -355,8 +366,8 @@ useEffect(() => {
 
       {/* ⏱ Affichage du timer */}
       {!gameState.revealAnswer && gameState.isPlaying && (
-        <p className="text-m text-gray-600">
-          ⏳ {gameState.timer}s
+        <p className="text-2xl text-gray-600 font-bold mb-5">
+          ⏳ {gameState.timer}
         </p>
       )}
 
@@ -365,31 +376,32 @@ useEffect(() => {
         e.preventDefault(); // 🔒 Empêche le rechargement de la page
         handleCheck();      // ✅ Déclenche la vérif de la réponse
       }}
-        className="w-full text-center space-y-4">
+        className="w-full text-center space-y-4 mb-3">
 
         {/* 📝 Champ pour le Titre. S'affiche toujours */}
         {(gameState.isPlaying || gameState.revealAnswer) && (
-        <div className="relative w-full">
-          <input
-            type="text" autoFocus
-            placeholder={typeTitle || 'Titre'}
+          <div className="relative w-full">
+            <input
+              ref={titleInputRef} // Pour forcer l'autofocus
+              type="text"
+              placeholder={typeTitle || 'Chanson'}
 
-            className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
-            value={titleGuess}
-            onChange={(e) =>
-              dispatch({ type: 'SET_GUESS', payload: { title: e.target.value } })
-            }
+              className="border border-orange-500 text-center rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-orange-300"
+              value={titleGuess}
+              onChange={(e) =>
+                dispatch({ type: 'SET_GUESS', payload: { title: e.target.value } })
+              }
 
-            readOnly={gameState.revealAnswer}
-          />
-          {validationState.titleCorrect && (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
-          )}
+              readOnly={gameState.revealAnswer}
+            />
+            {validationState.titleCorrect && (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 font-bold">✅</span>
+            )}
 
-          {validationState.inputErrorTitle && (
-            <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
-          )}
-        </div>
+            {validationState.inputErrorTitle && (
+              <span className="absolute right-3 top-1/4 -translate-y-1/2 text-red-600 text-sm text-center mt-2">❌</span>
+            )}
+          </div>
         )}
 
 
@@ -428,7 +440,7 @@ useEffect(() => {
           {gameState.isPlaying && !gameState.revealAnswer && (
             <button
               type="submit" // 🆗 Ou on peut ne rien mettre : par défaut c’est "submit"
-              className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition"
+              className="cursor-pointer bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-10 rounded shadow transition mt-2"
             >
               Valider la réponse
             </button>
@@ -450,7 +462,7 @@ useEffect(() => {
 
 
       {/* 🎥 Lecteur Youtube visible uniquement à la fin du timer, ou quand la bonne réponse a été trouvée */}
-      {gameState.showPlayer && (
+      <div className='mb-5'>{gameState.showPlayer && (
         <YoutubePlayer
           videoId={currentTrack.videoId}
           start={currentTrack.start}
@@ -458,6 +470,7 @@ useEffect(() => {
           showVideo={gameState.revealAnswer}
         />
       )}
+      </div>
 
       {/* 🎉 Affichage de la bonne réponse */}
       {gameState.revealAnswer && (
@@ -465,7 +478,8 @@ useEffect(() => {
           <p className="text-lg text-gray-700">
 
             {/* Si pas d'artiste, pas de tiret devant le titre */}
-            🎵 <strong>{currentTrack.artist ? `${currentTrack.artist} - ` : ''}  {currentTrack.title}</strong>
+            <p>🎵 <strong>{currentTrack.title}</strong></p>
+            <p>{currentTrack.artist}</p>
 
           </p>
           <button
