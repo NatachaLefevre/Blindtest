@@ -4,8 +4,8 @@ import './styles/App.css'
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-6">
-      <h1 className="text-4xl text-purple-500 font-bold text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center mt-5 gap-6 ">
+      <h1 className="text-5xl text-purple-500 font-bold text-center">
         BLINDTEST
       </h1>
 

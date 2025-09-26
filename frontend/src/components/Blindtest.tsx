@@ -236,17 +236,19 @@ export default function Blindtest() {
   }
 
   return (
-    <div className="flex flex-col items-center p-8 space-y-10 bg-white rounded-lg shadow w-full max-w-2xl mx-auto mt-0">
+    <div className="flex flex-col items-center p-5 space-y-10 bg-white rounded-lg shadow w-full max-w-3xl mx-auto mt-0">
 
       {/* Mode Titre, ou Titre + Artiste */}
-      <div className="flex gap-4 items-center">
-        <span className="text-lg font-semibold">Mode :</span>
-        <button
+      <div className="flex flex-col gap-4 items-center mb-8">
+        <span className="text-lg font-semibold">Mode</span>
+        <div>
+          <button
           onClick={() => {
             setAnswerMode('title')
           }
           }
-          className={`cursor-pointer text-lg px-4 py-2 rounded border ${answerMode === 'title'
+
+          className={`cursor-pointer text-lg mr-5 px-4 py-2 rounded border ${answerMode === 'title'
             ? 'bg-purple-500 text-white border-purple-500'
             : 'bg-white text-purple-600 hover:bg-purple-200 hover:shadow border-purple-500'
             }`}
@@ -265,12 +267,13 @@ export default function Blindtest() {
         >
           Titre + Artiste
         </button>
+        </div>
       </div>
 
 
       {/* ✅ Sélection des catégories */}
       <div className="text-center mb-4">
-        <span className="text-lg font-semibold">Catégories :</span>
+        <span className="text-lg font-semibold">Catégories</span>
         <CategorySelector
           selectedCategories={selectedCategories}
           onChange={setSelectedCategories}
