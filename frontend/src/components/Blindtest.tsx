@@ -1,4 +1,5 @@
 import { useReducer, useState, useEffect, useMemo, useRef } from 'react';
+import DarkModeToggle from "./DarkModeToggleProps";
 import { gameReducer, initialGameState } from './gameReducer';
 import { isCloseEnough } from '../utils/validation';
 import { categoriesWithTypeTitle, shuffleArray } from '../utils/gameHelpers';
@@ -21,8 +22,14 @@ type Track = {
 };
 
 
+// Dark mode
+type BlindtestProps = {
+  darkMode: boolean;
+  setDarkMode: (value: boolean) => void;
+};
 
-export default function Blindtest() {
+
+export default function Blindtest({ darkMode, setDarkMode }: BlindtestProps) {
 
   // 📝 États pour gérer les différentes fonctions du jeu.
   // Ils sont regroupés pour simplifier la gestion de l'état du jeu
@@ -236,6 +243,11 @@ export default function Blindtest() {
   }
 
   return (
+
+    <div className="relative">
+      {/* ✅ Toggle Dark Mode */}
+      <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
+    
     <div className="flex flex-col items-center pt-5 pb-5 p-10 space-y-10 bg-white rounded-lg shadow w-full max-w-3xl mx-auto mt-0">
 
       {/* Mode Titre, ou Titre + Artiste */}
@@ -419,5 +431,6 @@ export default function Blindtest() {
         </div>
       )}
     </div >
+    </div>
   );
 }

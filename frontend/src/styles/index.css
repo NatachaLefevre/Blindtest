@@ -11,20 +11,20 @@
 }
 
 /* Fond dégradé et tramé */
-body {
+ body {
   background: 
     radial-gradient(circle, rgba(255, 255, 255, 0.15) 30%, transparent 21%) repeat,
     linear-gradient(355deg, #f57f17, #fbc02d);
   background-size: 30px 30px, 100% 100%;
 }
 
-/* Test points en diagonale */
-/* body {
-  background:
-    radial-gradient(circle, rgba(255,255,255,0.15) 20%, transparent 21%) 0 0 / 60px 60px repeat,
-    radial-gradient(circle, rgba(255,255,255,0.15) 20%, transparent 21%) 30px 30px / 60px 60px repeat,
-    linear-gradient(135deg, #f57f17, #fbc02d);
-} */
+/* Mode nuit */
+body.dark-mode {
+  background: 
+    radial-gradient(circle, rgba(255, 255, 255, 0.15) 30%, transparent 21%) repeat,
+    linear-gradient(355deg, #160e06, #261d07);
+  background-size: 30px 30px, 100% 100%;
+}
 
 
 
