@@ -4,13 +4,13 @@ import './styles/App.css'
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center mt-5 gap-6 ">
-      <h1 className="text-5xl text-purple-500 font-bold text-center">
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 ">
+      <h1 className="text-5xl text-purple-500 font-bold text-center font-outline-2">
         BLINDTEST
       </h1>
 
       <Blindtest />
-      <p className="text-1xl text-purple-900 text-center">Créé par Natacha Lefèvre.<br/>
+      <footer className="text-1xl text-purple-900 text-center">Créé par Natacha Lefèvre.<br/>
       Ce blindtest est en développement. De nouvelles fonctionnalités sont prévues.<br />
         N'hésitez pas à me signaler le moindre bug que vous pourriez rencontrer, en envoyant un mail à: <br />
         <a
@@ -18,7 +18,7 @@ export default function App() {
           className="text-2xl text-purple-500 font-bold underline hover:text-purple-700">
           contact@axaba.fr
         </a>
-      </p>
+      </footer>
 
     </div>
   );
