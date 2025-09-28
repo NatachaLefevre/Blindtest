@@ -10,6 +10,6 @@ Le backend est assuré par un système de database et d'API (Supabase + API Yout
 Le blindtest est jouable en test à cette adresse : 
 ## <p align="center">https://blindtest-axaba.netlify.app/</p>
 
-![Capture03](https://github.com/user-attachments/assets/1073c2a6-5cb9-4ade-b7c9-c50bad0a3fe7)
+![Capture27](https://github.com/user-attachments/assets/5710e7e2-3ec4-4bc4-80d5-eca9652d2d34)
 
-![Capture_portfolio](https://github.com/user-attachments/assets/408465ce-53cd-42d1-869d-16d7daafde04)
+![Capture28](https://github.com/user-attachments/assets/2e851ce7-ce16-4ea2-8c11-7dcdc5a1fb4f)
