@@ -150,20 +150,16 @@ export default function Blindtest({ darkMode, setDarkMode }: BlindtestProps) {
     : '';
 
   // ⏱ Timer déclenché uniquement si un extrait est en cours
-  useEffect(() => {
-    if (gameState.isPlaying && gameState.timer > 0 && !gameState.revealAnswer) {
-      const countdown = setTimeout(() => dispatch({ type: 'TICK' }), 1000);
-      return () => clearTimeout(countdown);
-    }
+useEffect(() => {
+  if (gameState.isPlaying && gameState.timer > 0 && !gameState.revealAnswer) {
+    const countdown = setTimeout(() => dispatch({ type: 'TICK' }), 1000);
+    return () => clearTimeout(countdown);
+  }
 
-    if (gameState.timer === 0 && !gameState.revealAnswer) {
-      dispatch({ type: 'REVEAL_ANSWER' });
-    }
-
-    // Sinon, pas de countdown = pas de nettoyage à faire
-    return () => { };
-  }, [gameState]);
-
+  if (gameState.timer === 0 && !gameState.revealAnswer) {
+    dispatch({ type: 'REVEAL_ANSWER' });
+  }
+}, [gameState.timer, gameState.isPlaying, gameState.revealAnswer]);
 
 
   // ▶️ Pour lancer l'extrait.
