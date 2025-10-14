@@ -11,14 +11,16 @@ export default function DarkModeToggle({ darkMode, setDarkMode }: DarkModeToggle
         className={`text-2xl ${!darkMode ? "opacity-100" : "opacity-60"}`}
         title="Mode jour"
       >
-        <img src="./public/light_mode.webp" alt="emote light mode" />
+        {/* Les fichiers du dossier public/ ne s’importent pas via le chemin relatif (./public/...),
+            ils sont servis à la racine du site.*/}
+        <img src="/light_mode.webp" alt="emote light mode" />
       </button>
       <button
         onClick={() => setDarkMode(true)}
         className={`text-2xl ${darkMode ? "opacity-100" : "opacity-60"}`}
         title="Mode nuit"
       >
-        <img src="./public/dark_mode.webp" alt="emote dark mode" />
+        <img src="/dark_mode.webp" alt="emote dark mode" />
       </button>
     </div>
   );
