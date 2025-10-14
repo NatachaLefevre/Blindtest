@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Blindtest from './components/Blindtest';
+import Footer from './components/footer';
 import './styles/App.css'
 import './styles/index.css'
 
@@ -13,21 +14,15 @@ const [darkMode, setDarkMode] = useState(false);
   }, [darkMode]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-6 ">
-      <h1 className="text-5xl text-purple-500 font-bold text-center font-outline-2 pt-5">
-        BLINDTEST
+    <div className="min-h-screen flex flex-col items-center">
+      
+      <h1 className="py-5 px-10 ">
+        <img src="./public/logo_axaba_blindtest.webp" alt="titre axaba's blindtest" />
       </h1>
 
       <Blindtest darkMode={darkMode} setDarkMode={setDarkMode} />
-      <footer className="text-1xl text-white bg-orange-500/80 text-center py-5 px-10">Créé par Natacha Lefèvre.<br/>
-      Ce blindtest est en développement. De nouvelles fonctionnalités sont prévues.<br />
-        N'hésitez pas à me signaler le moindre bug que vous pourriez rencontrer, en envoyant un mail à: <br />
-        <a
-          href="mailto:contact@axaba.fr"
-          className="text-2xl text-purple-600 font-bold underline hover:text-purple-700">
-          contact@axaba.fr
-        </a>
-      </footer>
+
+      <Footer />
 
     </div>
   );

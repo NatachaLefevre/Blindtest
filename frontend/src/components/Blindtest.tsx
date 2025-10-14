@@ -244,7 +244,7 @@ useEffect(() => {
       {/* ✅ Toggle Dark Mode */}
       <DarkModeToggle darkMode={darkMode} setDarkMode={setDarkMode} />
     
-    <div className="flex flex-col items-center pt-5 pb-5 p-10 space-y-10 bg-white rounded-lg shadow w-full max-w-3xl mx-auto mt-0">
+    <div className="flex flex-col items-center p-10 space-y-10 bg-white rounded-lg shadow w-full max-w-5xl mx-auto mt-0">
 
       {/* Mode Titre, ou Titre + Artiste */}
       <div className="flex flex-col gap-4 items-center mb-8">

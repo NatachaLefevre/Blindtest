@@ -2,4 +2,5 @@ h1 {
     font-family: "gluten";
     letter-spacing: 7px;
     text-shadow: -2px 0 white, 0 2px white, 2px 0 white, 0 -2px white;
+    max-width: 450px;
 }
