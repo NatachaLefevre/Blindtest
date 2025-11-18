@@ -81,8 +81,8 @@ export default function Blindtest({ darkMode, setDarkMode }: BlindtestProps) {
         setTrackList(data);
 
         // 🔹 On sélectionne toutes les catégories uniques par défaut
-        const allCategories = Array.from(new Set(data.map(track => track.category)));
-        setSelectedCategories(allCategories);
+        // const allCategories = Array.from(new Set(data.map(track => track.category)));
+        // setSelectedCategories(allCategories);
       })
 
       .catch((error) => console.error('Erreur chargement Supabase :', error));
